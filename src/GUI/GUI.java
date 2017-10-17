@@ -21,6 +21,10 @@ public class GUI extends Application {
     public void start(Stage primaryStage)
     {
         primaryStage.setTitle("Login");
+        GridPane grid = new GridPane();
+        Scene scene = new Scene(grid, 300, 275);
+        primaryStage.setScene(scene);
+        primaryStage.show();
         MainGUI();
 
     }
