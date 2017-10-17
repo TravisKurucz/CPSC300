@@ -20,6 +20,14 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage)
     {
+        primaryStage.setTitle("Login");
+        MainGUI();
+
+    }
+
+    private void MainGUI()
+    {
+        Stage primaryStage = new Stage();
         primaryStage.setTitle("Inventory Management");
         Button btn = new Button();
         Button btn2 = new Button();
@@ -61,8 +69,6 @@ public class GUI extends Application {
         Scene scene = new Scene(grid, 300, 275);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
     }
 
     private void Invoice()
