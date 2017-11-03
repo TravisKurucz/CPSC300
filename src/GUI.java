@@ -185,6 +185,8 @@ public class GUI extends Application {
 
         TextArea three = new TextArea("Three");
 
+        Button save = new Button("Save");
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
         grid.setHgap(10);
@@ -193,6 +195,7 @@ public class GUI extends Application {
         grid.add(one, 1,1);
         grid.add(two, 2, 1);
         grid.add(three, 3, 1);
+        grid.add(save, 1, 2);
         Scene scene = new Scene(grid, 500, 600);
         stage.setScene(scene);
         stage.show();
