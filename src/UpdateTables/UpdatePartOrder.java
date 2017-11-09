@@ -19,7 +19,7 @@ public class UpdatePartOrder
 {
     private static ObservableList<PartOrder> data = FXCollections.observableArrayList(new PartOrder("123" , 25, "Bob", "Inventory", new ArrayList<Part>(0), "NAPA" )
             , new PartOrder("123" , 66, "Smith", "WorkOrder", new ArrayList<Part>(0), "Aro" ));
-    public static void updatePending(TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol)
+    public static void updatePending(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol)
     {
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
