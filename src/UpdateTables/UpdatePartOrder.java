@@ -5,8 +5,11 @@ import Database.PartOrder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.ArrayList;
+
+
 
 
 /**
@@ -19,6 +22,12 @@ public class UpdatePartOrder
     public static void updatePending(TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol)
     {
         numberCol.setCellValueFactory(
-                new PropertyValueFactory<PartOrder, Integer>("number"));
+                new PropertyValueFactory<>("number"));
+        suppCol.setCellValueFactory(
+                new PropertyValueFactory<>("supplier"));
+        orderByCol.setCellValueFactory(
+                new PropertyValueFactory<>("orderBy"));
+        table.setItems(data);
+
     }
 }

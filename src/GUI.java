@@ -1,9 +1,5 @@
-
-import PartOrders.PartOrder;
+import Database.PartOrder;
 import UpdateTables.UpdatePartOrder;
-
-
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -18,13 +15,24 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-
+/**
+ * This is where the program starts and where the GUI is built.
+ */
 public class GUI extends Application {
 
+    /**
+     * The main method that starts the login GUI and where the rest of the program is created from.
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * This is method that is required to start a GUI using JavaFX.
+     * It creates the login menu and all the associated buttons and text feilds.
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage)
     {
@@ -68,11 +76,16 @@ public class GUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * This is the method that creates the main window of our GUI this is where all of the users will start after
+     * logging in and where all the other tasks will start from.
+     */
     private void MainGUI()
     {
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Inventory Management");
 
+        //This button opens the part order window.
         Button btn = new Button();
         btn.setText("Part Order");
         btn.setMaxWidth(Double.MAX_VALUE);
@@ -83,6 +96,7 @@ public class GUI extends Application {
             }
         });
 
+        //This button opens the work order window.
         Button btn2 = new Button();
         btn2.setText("Work Order");
         btn2.setMaxWidth(Double.MAX_VALUE);
@@ -93,6 +107,7 @@ public class GUI extends Application {
             }
         });
 
+        //This button opens the report window.
         Button btn3 = new Button();
         btn3.setText("Report");
         btn3.setMaxWidth(Double.MAX_VALUE);
@@ -140,6 +155,9 @@ public class GUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * This is the window that deals with the creation and tracking of part orders.
+     */
     private void PartOrder()
     {
         Stage stage = new Stage();
@@ -156,13 +174,14 @@ public class GUI extends Application {
         buttons.setAlignment(Pos.BOTTOM_CENTER);
         buttons.setMinHeight(40);
 
+        //This tab displays all the pending part orders
         Tab pending = new Tab("Pending");
         pending.setClosable(false);
-        TableView tableViewPending = new TableView();
+        TableView<PartOrder> tableViewPending = new TableView<>();
         TableColumn numberPending = new TableColumn("Number");
         TableColumn supplierPending = new TableColumn("Supplier");
         TableColumn orderedByPending = new TableColumn("Ordered By");
-        UpdatePartOrder.updatePending(numberPending,supplierPending,orderedByPending);
+        UpdatePartOrder.updatePending(tableViewPending ,numberPending,supplierPending,orderedByPending);
         tableViewPending.getColumns().addAll(numberPending, supplierPending, orderedByPending);
 
 
@@ -170,6 +189,7 @@ public class GUI extends Application {
         borderPending.setBottom(buttons);
         pending.setContent(borderPending);
 
+        //This tab displays all the outstanding work orders
         Tab outstanding = new Tab("Outstanding");
         outstanding.setClosable(false);
         TableView tableViewOutstanding = new TableView();
@@ -179,6 +199,8 @@ public class GUI extends Application {
         tableViewOutstanding.getColumns().addAll(numberOutstanding, supplierOutstanding, orderedByOutstanding);
         outstanding.setContent(tableViewOutstanding);
 
+
+        //This tab displays all the finalized part orders.
         Tab finalized = new Tab("Finalized");
         finalized.setClosable(false);
         TableView tableViewFinalized = new TableView();
@@ -195,6 +217,9 @@ public class GUI extends Application {
         stage.show();
     }
 
+    /**
+     * This is the window that deals with the creation and tracking of work orders.
+     */
     private void WorkOrder()
     {
         Stage stage = new Stage();
@@ -203,6 +228,9 @@ public class GUI extends Application {
         stage.show();
     }
 
+    /**
+     * This is the window that deals with the generation of reports.
+     */
     private void Report()
     {
         Stage stage = new Stage();
