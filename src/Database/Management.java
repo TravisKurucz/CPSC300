@@ -11,6 +11,11 @@ import java.util.ArrayList;
 
 public class Management {
 
+
+    public static boolean addObject(File file, Object newEntry){
+        return true;
+    }
+
     public static boolean addToDatabase(File file, String s) throws IOException
     {
         if(true)
