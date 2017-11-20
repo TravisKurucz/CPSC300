@@ -7,7 +7,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -131,8 +130,8 @@ public class GUI extends Application {
         Text text = new Text();
         text.setText("Error Area");
 
-        TextArea area = new TextArea();
-        area.setEditable(false);
+        TextArea errorArea = new TextArea();
+        errorArea.setEditable(false);
 
         VBox vbButtons = new VBox();
         vbButtons.setSpacing(10);
@@ -147,7 +146,7 @@ public class GUI extends Application {
         grid.setPadding(new Insets(25,25,25,25));
         grid.add(vbButtons, 0,0,2,1);
         grid.add(text,2,2,2,1);
-        grid.add(area, 2,3,2,1);
+        grid.add(errorArea, 2,3,2,1);
         Scene scene = new Scene(grid, 600, 600);
 
         primaryStage.setScene(scene);
@@ -181,8 +180,13 @@ public class GUI extends Application {
         TableColumn numberPending = new TableColumn("Number");
         TableColumn supplierPending = new TableColumn("Supplier");
         TableColumn orderedByPending = new TableColumn("Ordered By");
-        UpdatePartOrder.updatePending(tableViewPending ,numberPending,supplierPending,orderedByPending);
-        tableViewPending.getColumns().addAll(numberPending, supplierPending, orderedByPending);
+        TableColumn costPending = new TableColumn("Cost");
+        TableColumn orderedTypePending = new TableColumn("Order Type");
+        TableColumn partsOrderedPending = new TableColumn("Parts Ordered");
+        UpdatePartOrder.updatePending(tableViewPending ,numberPending,supplierPending,orderedByPending, costPending,
+                orderedTypePending, partsOrderedPending);
+        tableViewPending.getColumns().addAll(numberPending, supplierPending, orderedByPending, costPending,
+                orderedTypePending, partsOrderedPending);
 
 
         borderPending.setCenter(tableViewPending);
@@ -196,7 +200,13 @@ public class GUI extends Application {
         TableColumn numberOutstanding = new TableColumn("Number");
         TableColumn supplierOutstanding = new TableColumn("Supplier");
         TableColumn orderedByOutstanding = new TableColumn("Ordered By");
-        tableViewOutstanding.getColumns().addAll(numberOutstanding, supplierOutstanding, orderedByOutstanding);
+        TableColumn costOutstanding = new TableColumn("Cost");
+        TableColumn orderedTypeOutstanding = new TableColumn("Order Type");
+        TableColumn partsOrderedOutstanding = new TableColumn("Parts Ordered");
+        UpdatePartOrder.updateOutstanding(tableViewOutstanding ,numberOutstanding,supplierOutstanding,orderedByOutstanding,
+                costOutstanding, orderedTypeOutstanding, partsOrderedOutstanding);
+        tableViewOutstanding.getColumns().addAll(numberOutstanding, supplierOutstanding, orderedByOutstanding,
+                costOutstanding, orderedTypeOutstanding, partsOrderedOutstanding);
         outstanding.setContent(tableViewOutstanding);
 
 
@@ -207,7 +217,13 @@ public class GUI extends Application {
         TableColumn numberFinalized = new TableColumn("Number");
         TableColumn supplierFinalized = new TableColumn("Supplier");
         TableColumn orderedByFinalized = new TableColumn("Ordered By");
-        tableViewFinalized.getColumns().addAll(numberFinalized, supplierFinalized, orderedByFinalized);
+        TableColumn costFinalized = new TableColumn("Cost");
+        TableColumn orderedTypeFinalized = new TableColumn("Order Type");
+        TableColumn partsOrderedFinalized = new TableColumn("Parts Ordered");
+        UpdatePartOrder.updateFinalized(tableViewFinalized ,numberFinalized,supplierFinalized,orderedByFinalized,
+                costFinalized, orderedTypeFinalized, partsOrderedFinalized);
+        tableViewFinalized.getColumns().addAll(numberFinalized, supplierFinalized, orderedByFinalized,
+                costFinalized, orderedTypeFinalized, partsOrderedFinalized);
         finalized.setContent(tableViewFinalized);
 
         TabPane tabPane = new TabPane(pending, outstanding, finalized);
