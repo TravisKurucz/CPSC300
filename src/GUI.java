@@ -9,10 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.*;
@@ -38,7 +35,7 @@ public class GUI extends Application {
 
     /**
      * This is method that is required to start a GUI using JavaFX.
-     * It creates the login menu and all the associated buttons and text feilds.
+     * It creates the login menu and all the associated buttons and text fields.
      * @param primaryStage
      */
     @Override
@@ -59,14 +56,16 @@ public class GUI extends Application {
         });
 
         TextArea login = new TextArea();
+        login.setMaxHeight(12);
+        login.setWrapText(true);
 
         TextArea pass = new TextArea();
+        pass.setMaxHeight(12);
+        pass.setWrapText(true);
 
-        Text loginWord = new Text();
-        loginWord.setText("User Name:");
+        Text loginWord = new Text("User Name:");
 
-        Text passWord = new Text();
-        passWord.setText("Password:");
+        Text passWord = new Text("Password:");
 
         grid.setHgap(10);
         grid.setVgap(10);
@@ -169,15 +168,28 @@ public class GUI extends Application {
     private void PartOrder()
     {
         Stage stage = new Stage();
-        stage.setTitle("Part Order");
-
         BorderPane borderPending = new BorderPane();
         HBox buttons = new HBox();
 
-        Button one = new Button("One");
-        Button two = new Button("Two");
+        stage.setTitle("Part Order");
 
-        buttons.getChildren().addAll(one, two);
+        Button editSelected = new Button("Edit Selected");
+        editSelected.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                editPartOrder();
+            }
+        });
+
+        Button createNew = new Button("Create New");
+        createNew.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                createNewPartOrder();
+            }
+        });
+
+        buttons.getChildren().addAll(editSelected, createNew);
         buttons.setSpacing(10);
         buttons.setAlignment(Pos.BOTTOM_CENTER);
         buttons.setMinHeight(40);
@@ -192,6 +204,7 @@ public class GUI extends Application {
         TableColumn costPending = new TableColumn("Cost");
         TableColumn orderedTypePending = new TableColumn("Order Type");
         TableColumn partsOrderedPending = new TableColumn("Parts Ordered");
+
         UpdatePartOrder.updatePending(tableViewPending ,numberPending,supplierPending,orderedByPending, costPending,
                 orderedTypePending, partsOrderedPending);
         tableViewPending.getColumns().addAll(numberPending, supplierPending, orderedByPending, costPending,
@@ -212,12 +225,12 @@ public class GUI extends Application {
         TableColumn costOutstanding = new TableColumn("Cost");
         TableColumn orderedTypeOutstanding = new TableColumn("Order Type");
         TableColumn partsOrderedOutstanding = new TableColumn("Parts Ordered");
+
         UpdatePartOrder.updateOutstanding(tableViewOutstanding ,numberOutstanding,supplierOutstanding,orderedByOutstanding,
                 costOutstanding, orderedTypeOutstanding, partsOrderedOutstanding);
         tableViewOutstanding.getColumns().addAll(numberOutstanding, supplierOutstanding, orderedByOutstanding,
                 costOutstanding, orderedTypeOutstanding, partsOrderedOutstanding);
         outstanding.setContent(tableViewOutstanding);
-
 
         //This tab displays all the finalized part orders.
         Tab finalized = new Tab("Finalized");
@@ -229,6 +242,7 @@ public class GUI extends Application {
         TableColumn costFinalized = new TableColumn("Cost");
         TableColumn orderedTypeFinalized = new TableColumn("Order Type");
         TableColumn partsOrderedFinalized = new TableColumn("Parts Ordered");
+
         UpdatePartOrder.updateFinalized(tableViewFinalized ,numberFinalized,supplierFinalized,orderedByFinalized,
                 costFinalized, orderedTypeFinalized, partsOrderedFinalized);
         tableViewFinalized.getColumns().addAll(numberFinalized, supplierFinalized, orderedByFinalized,
@@ -237,6 +251,76 @@ public class GUI extends Application {
 
         TabPane tabPane = new TabPane(pending, outstanding, finalized);
         Scene scene = new Scene(tabPane, 700, 800);
+        stage.setScene(scene);
+        stage.setMaximized(true);
+        stage.show();
+    }
+
+    private void editPartOrder()
+    {
+        //TODO need to have selected information transfer
+        Stage stage = new Stage();
+        stage.setTitle("Edit");
+
+        stage.setMaximized(true);
+        stage.show();
+    }
+
+    /**
+     * This is the window that opens to create a new part order
+     */
+    private void createNewPartOrder()
+    {
+        Stage stage = new Stage();
+        BorderPane border = new BorderPane();
+        Text supplier = new Text(" Supplier:  ");
+        Text poNumber = new Text(" PO #: ");
+        TextArea supplierArea = new TextArea();
+        TextArea poArea = new TextArea();
+        HBox hBox = new HBox();
+        HBox button = new HBox();
+        TableView edit = new TableView();
+        TableColumn number = new TableColumn("Number");
+        TableColumn description = new TableColumn("Description");
+        TableColumn ordered = new TableColumn("Ordered #");
+        Scene scene = new Scene(border, 700, 800);
+
+        //Used to add a new part to the part order
+        Button add = new Button("Add");
+        add.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                addPartToOrder();
+            }
+        });
+
+        stage.setTitle("Create New");
+
+        supplier.setStyle("-fx-font: 18 arial");
+
+        supplierArea.setStyle("-fx-font: 18 arial");
+        supplierArea.setWrapText(true);
+        supplierArea.setMaxWidth(200);
+        supplierArea.setMaxHeight(12);
+
+        poNumber.setStyle("-fx-font: 18 arial");
+
+        poArea.setStyle("-fx-font: 18 arial");
+        poArea.setWrapText(true);
+        poArea.setMaxHeight(12);
+        poArea.setMaxWidth(200);
+
+        hBox.getChildren().addAll(supplier, supplierArea, poNumber, poArea);
+
+        button.getChildren().setAll(add);
+        button.setAlignment(Pos.BOTTOM_CENTER);
+
+        edit.getColumns().addAll(number, description, ordered);
+
+        border.setCenter(edit);
+        border.setTop(hBox);
+        border.setBottom(button);
+
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
@@ -373,5 +457,13 @@ public class GUI extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void addPartToOrder()
+    {
+        Stage stage = new Stage();
+        stage.setTitle("Add Part");
+        stage.show();
+    }
+
 
 }
