@@ -45,10 +45,5 @@ public class Management {
         String output = reader.readLine();
         reader.close();
         return output;
-
-
-
-
-
     }
 }

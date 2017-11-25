@@ -18,13 +18,13 @@ public class PartOrder
 
 
     //constructor
-    public PartOrder(String cost, int number, String orderBy, String orderType, ArrayList<Part> partsOrdered, String supplier) {
+    public PartOrder(String cost, int number, String orderBy, String orderType, String supplier) {
         this.cost = new SimpleStringProperty(cost);
         this.number = number;
         this.supplier = new SimpleStringProperty(supplier);
         this.orderBy = new SimpleStringProperty(orderBy);
         this.orderType = new SimpleStringProperty(orderType);
-        this.partsOrdered = partsOrdered;
+        this.partsOrdered = new ArrayList<>();
 
     }
 
@@ -79,7 +79,9 @@ public class PartOrder
         return partsOrdered;
     }
 
-    public void setPartsOrdered(ArrayList<Part> partsOrdered) {
-        this.partsOrdered = partsOrdered;
+    public void setPartsOrdered(Part part) {
+        partsOrdered.add(part);
     }
+
+    public void removePart (Part part){partsOrdered.remove(part);}
 }

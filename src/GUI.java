@@ -1,6 +1,8 @@
+import Database.Part;
 import Database.PartOrder;
 import UpdateTables.UpdatePartOrder;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -162,30 +164,6 @@ public class GUI extends Application {
         BorderPane borderPending = new BorderPane();
         HBox buttons = new HBox();
 
-        stage.setTitle("Part Order");
-
-        Button editSelected = new Button("Edit Selected");
-        editSelected.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                editPartOrder();
-            }
-        });
-
-        Button createNew = new Button("Create New");
-        createNew.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                createNewPartOrder();
-            }
-        });
-
-        buttons.getChildren().addAll(editSelected, createNew);
-        buttons.setSpacing(10);
-        buttons.setAlignment(Pos.BOTTOM_CENTER);
-        buttons.setMinHeight(40);
-
-        //This tab displays all the pending part orders
         Tab pending = new Tab("Pending");
         pending.setClosable(false);
         TableView<PartOrder> tableViewPending = new TableView<>();
@@ -234,6 +212,33 @@ public class GUI extends Application {
         TableColumn orderedTypeFinalized = new TableColumn("Order Type");
         TableColumn partsOrderedFinalized = new TableColumn("Parts Ordered");
 
+        stage.setTitle("Part Order");
+
+        Button editSelected = new Button("Edit Selected");
+        editSelected.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                editPartOrder();
+            }
+        });
+
+        Button createNew = new Button("Create New");
+        createNew.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                createNewPartOrder(tableViewPending ,numberPending,supplierPending,orderedByPending, costPending,
+                        orderedTypePending, partsOrderedPending);
+            }
+        });
+
+        buttons.getChildren().addAll(editSelected, createNew);
+        buttons.setSpacing(10);
+        buttons.setAlignment(Pos.BOTTOM_CENTER);
+        buttons.setMinHeight(40);
+
+        //This tab displays all the pending part orders
+
+
         UpdatePartOrder.updateFinalized(tableViewFinalized ,numberFinalized,supplierFinalized,orderedByFinalized,
                 costFinalized, orderedTypeFinalized, partsOrderedFinalized);
         tableViewFinalized.getColumns().addAll(numberFinalized, supplierFinalized, orderedByFinalized,
@@ -260,7 +265,8 @@ public class GUI extends Application {
     /**
      * This is the window that opens to create a new part order
      */
-    private void createNewPartOrder()
+    private void createNewPartOrder(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
+                                    TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
     {
         Stage stage = new Stage();
         BorderPane border = new BorderPane();
@@ -270,18 +276,50 @@ public class GUI extends Application {
         TextArea poArea = new TextArea();
         HBox hBox = new HBox();
         HBox button = new HBox();
-        TableView edit = new TableView();
-        TableColumn number = new TableColumn("Number");
-        TableColumn description = new TableColumn("Description");
-        TableColumn ordered = new TableColumn("Ordered #");
+        TableView<Part> edit = new TableView<>();
+        TableColumn<Part, String> number = new TableColumn<>("Number");
+        TableColumn<Part, String> description = new TableColumn<>("Description");
+        TableColumn<Part, Integer> ordered = new TableColumn<>("Ordered #");
         Scene scene = new Scene(border, 700, 800);
+        PartOrder order = new PartOrder(null, 0, "Name", "Type", "Supplier");
 
         //Used to add a new part to the part order
         Button add = new Button("Add");
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                addPartToOrder();
+                addPartToOrder(edit, number, description, ordered, order);
+            }
+        });
+
+        Button delete = new Button("Delete");
+        delete.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition position =  edit.getSelectionModel().getSelectedCells().get(0);
+                int row = position.getRow();
+                Part part = edit.getItems().get(row);
+                order.removePart(part);
+                for ( int i = 0; i<edit.getItems().size(); i++) {
+                    edit.getItems().clear();
+                }
+                UpdatePartOrder.updateNewPartOrder(edit, number, description, ordered, order);
+                //order.removePart(part);
+            }
+        });
+
+        Button save = new Button("Save");
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                order.setNumber(Integer.valueOf(poArea.getText()));
+                order.setSupplier(supplierArea.getText());
+                order.setCost("Cost");
+                order.setOrderType("Type");
+                order.setOrderBy("Name");
+                UpdatePartOrder.addOrderPending(order);
+                UpdatePartOrder.updatePending(table, numberCol, suppCol, orderByCol, costCol, typeCol, partsOrderedCol);
+                stage.close();
             }
         });
 
@@ -303,7 +341,8 @@ public class GUI extends Application {
 
         hBox.getChildren().addAll(supplier, supplierArea, poNumber, poArea);
 
-        button.getChildren().setAll(add);
+        button.getChildren().setAll(add, delete, save);
+        button.setSpacing(10);
         button.setAlignment(Pos.BOTTOM_CENTER);
 
         edit.getColumns().addAll(number, description, ordered);
@@ -366,9 +405,53 @@ public class GUI extends Application {
         stage.show();
     }
 
-    private void addPartToOrder()
+    private void addPartToOrder(TableView table, TableColumn partNumber, TableColumn partDescription,
+                                TableColumn numberOrdered, PartOrder order)
     {
         Stage stage = new Stage();
+        Text number = new Text("Number: ");
+        Text description = new Text("Description");
+        Text amount = new Text("Amount");
+        TextArea numberArea = new TextArea();
+        TextArea descriptionArea = new TextArea();
+        TextArea amountArea = new TextArea();
+        BorderPane borderPane = new BorderPane();
+        Button save = new Button("Save");
+        HBox hBox = new HBox();
+
+        hBox.setAlignment(Pos.BASELINE_CENTER);
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                order.setPartsOrdered(new Part(numberArea.getText(), "Name", "Cost"));
+                for ( int i = 0; i<table.getItems().size(); i++) {
+                    table.getItems().clear();
+                }
+                UpdatePartOrder.updateNewPartOrder(table, partNumber, partDescription, numberOrdered, order);
+                stage.close();
+            }
+        });
+
+        numberArea.setWrapText(true);
+        numberArea.setMaxHeight(12);
+        numberArea.setMaxWidth(300);
+
+        descriptionArea.setWrapText(true);
+        descriptionArea.setMaxHeight(12);
+        descriptionArea.setMaxWidth(300);
+
+        amountArea.setWrapText(true);
+        amountArea.setMaxHeight(12);
+        amountArea.setMaxWidth(300);
+
+        VBox vBox = new VBox(number, numberArea, description, descriptionArea, amount, amountArea);
+        vBox.setAlignment(Pos.CENTER);
+
+        borderPane.setCenter(vBox);
+        borderPane.setBottom(save);
+        Scene scene = new Scene(borderPane, 350, 300);
+        stage.setScene(scene);
         stage.setTitle("Add Part");
         stage.show();
     }
