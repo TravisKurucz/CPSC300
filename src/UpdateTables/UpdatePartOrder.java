@@ -2,41 +2,53 @@ package UpdateTables;
 
 import Database.Part;
 import Database.PartOrder;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.ArrayList;
+import javafx.util.Callback;
+
+import java.util.List;
 
 /**
  * Created by colton on 2017-11-07.
+ * Used to update the tables found in the part order window.
  */
 public class UpdatePartOrder
 {
     //These list hold all the information that will be written to each table.
-    private static ObservableList<PartOrder> pending = FXCollections.observableArrayList(new PartOrder("123" ,25, "Bob", "Inventory", new ArrayList<Part>(0), "NAPA" )
-            , new PartOrder("123" , 66, "Smith", "WorkOrder", new ArrayList<Part>(0), "Aro" ));
+    private static ObservableList<PartOrder> pending = FXCollections.observableArrayList(new PartOrder("123" ,25, "Bob", "Inventory", "NAPA" )
+            , new PartOrder("123" , 66, "Smith", "WorkOrder", "Aro" ));
 
-    private static ObservableList<PartOrder> outstanding = FXCollections.observableArrayList(new PartOrder("456" ,25, "Bob", "Inventory", new ArrayList<Part>(0), "NAPA" )
-            , new PartOrder("456" , 66, "Smith", "WorkOrder", new ArrayList<Part>(0), "Aro" ));
+    private static ObservableList<PartOrder> outstanding = FXCollections.observableArrayList(new PartOrder("456" ,25, "Bob", "Inventory", "NAPA" )
+            , new PartOrder("456" , 66, "Smith", "WorkOrder", "Aro" ));
 
-    private static ObservableList<PartOrder> finalized = FXCollections.observableArrayList(new PartOrder("789" ,25, "Bob", "Inventory", new ArrayList<Part>(0), "NAPA" )
-            , new PartOrder("789" , 66, "Smith", "WorkOrder", new ArrayList<Part>(0), "Aro" ));
+    private static ObservableList<PartOrder> finalized = FXCollections.observableArrayList(new PartOrder("789" ,25, "Bob", "Inventory", "NAPA" )
+            , new PartOrder("789" , 66, "Smith", "WorkOrder", "Aro" ));
 
+    public static void addOrderPending(PartOrder order)
+    {
+        pending.addAll(order);
+    }
     /**
      * This method updates the tabs with all the pending part order information
      * @param table The table that all the columns are on.
-     * @param numberCol column containing the numbers of the part orders
-     * @param suppCol column containing the suppliers of the part orders
-     * @param orderByCol column containing the name of the person who ordered the part
-     * @param costCol the cost of the order
-     * @param typeCol the typr of the order
-     * @param partsOrderedCol list of the parts ordered
+
      */
-    public static void updatePending(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
-                                     TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
+    public static void updatePending(TableView table)
     {
+        //The table is created in a specific order so it is known what the format will be ahead of time so you can
+        //name the columns here to create the cell factories.
+        List<TableColumn> list = table.getColumns();
+        TableColumn numberCol = list.get(0);
+        TableColumn suppCol = list.get(1);
+        TableColumn orderByCol = list.get(2);
+        TableColumn costCol = list.get(3);
+        TableColumn typeCol = list.get(4);
+        TableColumn partsOrderedCol = list.get(5);
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
         suppCol.setCellValueFactory(
@@ -56,16 +68,19 @@ public class UpdatePartOrder
     /**
      * This method updates the tabs with all the outstanding part order information
      * @param table The table that all the columns are on.
-     * @param numberCol column containing the numbers of the part orders
-     * @param suppCol column containing the suppliers of the part orders
-     * @param orderByCol column containing the name of the person who ordered the part
-     * @param costCol the cost of the order
-     * @param typeCol the typr of the order
-     * @param partsOrderedCol list of the parts ordered
      */
-    public static void updateOutstanding(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
-                                     TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
+    public static void updateOutstanding(TableView table)
     {
+        //The table is created in a specific order so it is known what the format will be ahead of time so you can
+        //name the columns here to create the cell factories.
+        List<TableColumn> list = table.getColumns();
+        TableColumn numberCol = list.get(0);
+        TableColumn suppCol = list.get(1);
+        TableColumn orderByCol = list.get(2);
+        TableColumn costCol = list.get(3);
+        TableColumn typeCol = list.get(4);
+        TableColumn partsOrderedCol = list.get(5);
+
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
         suppCol.setCellValueFactory(
@@ -85,16 +100,19 @@ public class UpdatePartOrder
     /**
      * This method updates the tabs with all the finalized part order information
      * @param table The table that all the columns are on.
-     * @param numberCol column containing the numbers of the part orders
-     * @param suppCol column containing the suppliers of the part orders
-     * @param orderByCol column containing the name of the person who ordered the part
-     * @param costCol the cost of the order
-     * @param typeCol the typr of the order
-     * @param partsOrderedCol list of the parts ordered
      */
-    public static void updateFinalized(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
-                                         TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
+    public static void updateFinalized(TableView table)
     {
+        //The table is created in a specific order so it is known what the format will be ahead of time so you can
+        //name the columns here to create the cell factories.
+        List<TableColumn> list = table.getColumns();
+        TableColumn numberCol = list.get(0);
+        TableColumn suppCol = list.get(1);
+        TableColumn orderByCol = list.get(2);
+        TableColumn costCol = list.get(3);
+        TableColumn typeCol = list.get(4);
+        TableColumn partsOrderedCol = list.get(5);
+
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
         suppCol.setCellValueFactory(
@@ -111,5 +129,32 @@ public class UpdatePartOrder
         table.setItems(finalized);
     }
 
+    public static void updateNewPartOrder(TableView table, TableColumn partNumber, TableColumn partDescription,
+                                          TableColumn numberOrdered, PartOrder order)
+    {
+        partNumber.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Part, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Part, String> p) {
+                return new SimpleStringProperty(p.getValue().getPartNumber());
+            }
+        });
+
+        partDescription.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Part, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Part, String> p) {
+                return new SimpleStringProperty(p.getValue().getName());
+            }
+        });
+
+        numberOrdered.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Part, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Part, String> p) {
+                return new SimpleStringProperty(String.valueOf(p.getValue().getNumberOrdered()));
+            }
+        });
+
+        table.getItems().addAll(order.getPartsOrdered());
+
+    }
 
 }

@@ -40,6 +40,7 @@ public class Management {
         return true;
     }//end add object
 
+
     /**
      *
      * @param file is the file that we're trying to read from.
@@ -69,5 +70,6 @@ public class Management {
             e.printStackTrace();
             return null;
         }
+
     }
 }
