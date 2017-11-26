@@ -7,6 +7,7 @@ public class Part implements java.io.Serializable {
     private String partNumber;
     private String name;
     private String suggestedCost;
+    private int numberOrdered;
 
     //constructors:
 
@@ -14,12 +15,14 @@ public class Part implements java.io.Serializable {
         partNumber = null;
         name = null;
         suggestedCost = null;
+        numberOrdered = 0;
     }
 
-    public Part(String partNumber, String name, String suggestedCost){
+    public Part(String partNumber, String name, String suggestedCost, int numberOrdered){
         this.partNumber = partNumber;
         this.name = name;
         this.suggestedCost = suggestedCost;
+        this.numberOrdered = numberOrdered;
     }
 
     public String getName() {
@@ -44,5 +47,13 @@ public class Part implements java.io.Serializable {
 
     public void setSuggestedCost(String suggestedCost) {
         this.suggestedCost = suggestedCost;
+    }
+
+    public int getNumberOrdered() {
+        return numberOrdered;
+    }
+
+    public void setNumberOrdered(int numberOrdered) {
+        this.numberOrdered = numberOrdered;
     }
 }

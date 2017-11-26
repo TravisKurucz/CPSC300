@@ -11,11 +11,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by colton on 2017-11-07.
+ * Used to update the tables found in the part order window.
  */
 public class UpdatePartOrder
 {
@@ -36,16 +36,19 @@ public class UpdatePartOrder
     /**
      * This method updates the tabs with all the pending part order information
      * @param table The table that all the columns are on.
-     * @param numberCol column containing the numbers of the part orders
-     * @param suppCol column containing the suppliers of the part orders
-     * @param orderByCol column containing the name of the person who ordered the part
-     * @param costCol the cost of the order
-     * @param typeCol the typr of the order
-     * @param partsOrderedCol list of the parts ordered
+
      */
-    public static void updatePending(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
-                                     TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
+    public static void updatePending(TableView table)
     {
+        //The table is created in a specific order so it is known what the format will be ahead of time so you can
+        //name the columns here to create the cell factories.
+        List<TableColumn> list = table.getColumns();
+        TableColumn numberCol = list.get(0);
+        TableColumn suppCol = list.get(1);
+        TableColumn orderByCol = list.get(2);
+        TableColumn costCol = list.get(3);
+        TableColumn typeCol = list.get(4);
+        TableColumn partsOrderedCol = list.get(5);
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
         suppCol.setCellValueFactory(
@@ -65,16 +68,19 @@ public class UpdatePartOrder
     /**
      * This method updates the tabs with all the outstanding part order information
      * @param table The table that all the columns are on.
-     * @param numberCol column containing the numbers of the part orders
-     * @param suppCol column containing the suppliers of the part orders
-     * @param orderByCol column containing the name of the person who ordered the part
-     * @param costCol the cost of the order
-     * @param typeCol the typr of the order
-     * @param partsOrderedCol list of the parts ordered
      */
-    public static void updateOutstanding(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
-                                     TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
+    public static void updateOutstanding(TableView table)
     {
+        //The table is created in a specific order so it is known what the format will be ahead of time so you can
+        //name the columns here to create the cell factories.
+        List<TableColumn> list = table.getColumns();
+        TableColumn numberCol = list.get(0);
+        TableColumn suppCol = list.get(1);
+        TableColumn orderByCol = list.get(2);
+        TableColumn costCol = list.get(3);
+        TableColumn typeCol = list.get(4);
+        TableColumn partsOrderedCol = list.get(5);
+
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
         suppCol.setCellValueFactory(
@@ -94,16 +100,19 @@ public class UpdatePartOrder
     /**
      * This method updates the tabs with all the finalized part order information
      * @param table The table that all the columns are on.
-     * @param numberCol column containing the numbers of the part orders
-     * @param suppCol column containing the suppliers of the part orders
-     * @param orderByCol column containing the name of the person who ordered the part
-     * @param costCol the cost of the order
-     * @param typeCol the typr of the order
-     * @param partsOrderedCol list of the parts ordered
      */
-    public static void updateFinalized(TableView table, TableColumn numberCol, TableColumn suppCol, TableColumn orderByCol,
-                                         TableColumn costCol, TableColumn typeCol, TableColumn partsOrderedCol)
+    public static void updateFinalized(TableView table)
     {
+        //The table is created in a specific order so it is known what the format will be ahead of time so you can
+        //name the columns here to create the cell factories.
+        List<TableColumn> list = table.getColumns();
+        TableColumn numberCol = list.get(0);
+        TableColumn suppCol = list.get(1);
+        TableColumn orderByCol = list.get(2);
+        TableColumn costCol = list.get(3);
+        TableColumn typeCol = list.get(4);
+        TableColumn partsOrderedCol = list.get(5);
+
         numberCol.setCellValueFactory(
                 new PropertyValueFactory<>("number"));
         suppCol.setCellValueFactory(
@@ -134,6 +143,13 @@ public class UpdatePartOrder
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Part, String> p) {
                 return new SimpleStringProperty(p.getValue().getName());
+            }
+        });
+
+        numberOrdered.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Part, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Part, String> p) {
+                return new SimpleStringProperty(String.valueOf(p.getValue().getNumberOrdered()));
             }
         });
 
