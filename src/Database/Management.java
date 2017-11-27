@@ -93,6 +93,15 @@ public class Management {
      *
      */
 
+    public static ArrayList<Object> readList(String filePath){
+        try {
+            File file = new File(filePath);
+            return readList(file);
+        } catch (Exception e){
+            return null;
+        }
+    }
+
     public static ArrayList<Object> readList(File file) throws IOException {
         try {
 
