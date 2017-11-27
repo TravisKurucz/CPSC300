@@ -6,7 +6,7 @@ import Database.*;
 /**
  * Created by Travis Kurucz on 2017-11-26.
  */
-public class CastingMethods {
+public class Casting {
 
     //Note: There is probably an easier way to do this with java generics, but here I'm doing the brute force way
 
