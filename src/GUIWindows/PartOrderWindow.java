@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.util.Random;
 
 /**
@@ -27,6 +26,7 @@ public class PartOrderWindow
         Stage stage = new Stage();
 
         BorderPane borderPending = new BorderPane();
+        BorderPane borderOutstanding = new BorderPane();
 
         Tab pending = new Tab("Pending");
         Tab outstanding = new Tab("Outstanding");
@@ -38,14 +38,23 @@ public class PartOrderWindow
 
         Button editSelected = new Button("Edit Selected");
         Button createNew = new Button("Create New");
+        Button submit = new Button("Submit");
+        Button finalize = new Button("Finalize");
 
-        HBox buttons = new HBox(10, editSelected, createNew);
+        HBox buttons = new HBox(10, editSelected, createNew, submit);
+        HBox buttons1 = new HBox(10, finalize);
 
         TabPane tabPane = new TabPane(pending, outstanding, finalized);
 
         Scene scene = new Scene(tabPane, 700, 800);
 
         buttons.setPadding(new Insets(10));
+        buttons.setAlignment(Pos.BOTTOM_CENTER);
+        buttons.setMinHeight(40);
+
+        buttons1.setPadding(new Insets(10));
+        buttons1.setAlignment(Pos.BOTTOM_CENTER);
+        buttons1.setMinHeight(40);
 
         pending.setClosable(false);
         outstanding.setClosable(false);
@@ -63,12 +72,15 @@ public class PartOrderWindow
         borderPending.setBottom(buttons);
         borderPending.setPadding(new Insets(10));
 
+        borderOutstanding.setCenter(tableViewOutstanding);
+        borderOutstanding.setBottom(buttons1);
+        borderOutstanding.setPadding(new Insets(10));
+
         pending.setContent(borderPending);
-        outstanding.setContent(tableViewOutstanding);
+        outstanding.setContent(borderOutstanding);
         finalized.setContent(tableViewFinalized);
 
-        buttons.setAlignment(Pos.BOTTOM_CENTER);
-        buttons.setMinHeight(40);
+
 
         stage.setTitle("Part Order");
         stage.setScene(scene);
@@ -79,7 +91,7 @@ public class PartOrderWindow
             public void handle(ActionEvent event) {
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
-                Database.PartOrder selected = tableViewPending.getItems().get(row);
+                PartOrder selected = tableViewPending.getItems().get(row);
                 createNewPartOrder(tableViewPending, selected);
             }
         });
@@ -88,8 +100,31 @@ public class PartOrderWindow
         createNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Database.PartOrder order = new Database.PartOrder(null, 0, "Name", "Type", "Supplier");
+                PartOrder order = new Database.PartOrder(null, 0, "Name", "Type", "Supplier");
                 createNewPartOrder(tableViewPending, order);
+            }
+        });
+
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+                PartOrder selected = tableViewPending.getItems().get(row);
+                UpdatePartOrder.removeOrderPending(selected);
+                UpdatePartOrder.addOrderOutstanding(selected);
+                UpdatePartOrder.updatePending(tableViewPending);
+                UpdatePartOrder.updateOutstanding(tableViewOutstanding);
+            }
+        });
+
+        finalize.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition pos = tableViewOutstanding.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+                PartOrder selected = tableViewOutstanding.getItems().get(row);
+                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected);
             }
         });
 
@@ -100,7 +135,7 @@ public class PartOrderWindow
      * The window that is used to create a new part order.
      * @param table The table from the previous window so it can be updated when this window is closed.
      */
-    private static void createNewPartOrder(TableView table, Database.PartOrder order)
+    private static void createNewPartOrder(TableView table, PartOrder order)
     {
         Stage stage = new Stage();
 
@@ -305,6 +340,73 @@ public class PartOrderWindow
         Scene scene = new Scene(borderPane, 350, 300);
         stage.setScene(scene);
         stage.setTitle("Add Part");
+        stage.show();
+    }
+
+    //TODO make the received column editable.
+    private static void finalizeSelected(TableView outsandingTable, TableView finalizedTable, PartOrder order)
+    {
+        Stage stage = new Stage();
+
+        Text poNumber = new Text("PO #:");
+        Text supplier = new Text("Supplier:");
+
+        TextArea poNumberArea = new TextArea();
+        TextArea supplierArea = new TextArea();
+
+        Button save = new Button("Save");
+
+        HBox hBox = new HBox(10, poNumber, poNumberArea, supplier, supplierArea);
+        HBox hBox1 = new HBox(10, save);
+
+        BorderPane borderPane = new BorderPane();
+
+        TableView<Part> table = new TableView<>();
+        TableColumn partNumber = new TableColumn("Part Number");
+        TableColumn name = new TableColumn("Name");
+        TableColumn amountOrdered = new TableColumn("Amount Ordered");
+        TableColumn received = new TableColumn("Received");
+        TableColumn actualCost = new TableColumn("Actual Cost");
+        TableColumn invoiceNumber = new TableColumn("Invoice Number");
+        TableColumn date = new TableColumn("Date");
+
+        table.getColumns().addAll(partNumber, name, amountOrdered, received, actualCost, invoiceNumber, date);
+
+        Scene scene= new Scene(borderPane);
+
+        borderPane.setCenter(table);
+        borderPane.setBottom(hBox1);
+        borderPane.setTop(hBox);
+        borderPane.setPadding(new Insets(10));
+
+        hBox.setPadding(new Insets(10));
+        hBox1.setPadding(new Insets(10));
+
+        poNumberArea.setWrapText(true);
+        poNumberArea.setMaxHeight(12);
+        poNumberArea.setMaxWidth(100);
+        poNumberArea.setText(String.valueOf(order.getNumber()));
+
+        supplierArea.setWrapText(true);
+        supplierArea.setMaxHeight(12);
+        supplierArea.setMaxWidth(100);
+        supplierArea.setText(order.getSupplier());
+
+        UpdatePartOrder.updateFinalizedPartOrder(table, order);
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                UpdatePartOrder.removeOrderOutstanding(order);
+                UpdatePartOrder.addOrderFinalized(order);
+                UpdatePartOrder.updateOutstanding(outsandingTable);
+                UpdatePartOrder.updateFinalized(finalizedTable);
+                stage.close();
+            }
+        });
+
+        stage.setScene(scene);
+        stage.setTitle("Finalize");
         stage.show();
     }
 }

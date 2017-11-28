@@ -14,12 +14,15 @@ public class WorkOrder implements java.io.Serializable
     private SimpleStringProperty unitName;
     private SimpleStringProperty costCode;
     private ArrayList<PartOrder> partOrders;
+    private ArrayList<Part> parts;
+
 
     public WorkOrder(String unitNumber, String unitName, String costCode) {
         this.unitNumber = new SimpleStringProperty(unitNumber);
         this.unitName = new SimpleStringProperty(unitName);
         this.costCode = new SimpleStringProperty(costCode);
         partOrders = new ArrayList<>();
+        parts = new ArrayList<>();
     }
 
     public String getUnitNumber() {
@@ -50,7 +53,20 @@ public class WorkOrder implements java.io.Serializable
         return partOrders.get(0);
     }
 
+    public ArrayList<PartOrder> getPartsOrderArray()
+    {
+        return partOrders;
+    }
+
     public void addPartOrders(PartOrder partOrder) {
         this.partOrders.add(partOrder);
+    }
+
+    public ArrayList<Part> getParts() {
+        return parts;
+    }
+
+    public void addParts(Part parts) {
+        this.parts.add(parts);
     }
 }

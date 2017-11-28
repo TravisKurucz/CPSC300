@@ -1,4 +1,5 @@
 package GUIWindows;
+import UpdateTables.UpdateInventory;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -22,6 +23,8 @@ public class MainGUI
      */
     public static void MainGUI()
     {
+        UpdateInventory.setObservableList();
+
         Stage primaryStage = new Stage();
 
         Text text = new Text("Error Area");
@@ -97,7 +100,7 @@ public class MainGUI
         inventory.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Inventory.Inventory();
+                Inventory.InventoryList();
             }
         });
 

@@ -33,6 +33,31 @@ public class UpdatePartOrder
     {
         pending.addAll(order);
     }
+
+    public static void addOrderFinalized(PartOrder order)
+    {
+        finalized.addAll(order);
+    }
+    public static void addOrderOutstanding(PartOrder order)
+    {
+        outstanding.addAll(order);
+    }
+    public static void removeOrderPending(PartOrder order)
+    {
+        pending.remove(order);
+    }
+    public static void removeOrderFinalized(PartOrder order)
+    {
+        finalized.remove(order);
+    }
+    public static void removeOrderOutstanding(PartOrder order)
+    {
+        outstanding.remove(order);
+    }
+    public static ObservableList getPending()
+    {
+        return pending;
+    }
     /**
      * This method updates the tabs with all the pending part order information
      * @param table The table that all the columns are on.
@@ -155,6 +180,24 @@ public class UpdatePartOrder
 
         table.getItems().addAll(order.getPartsOrdered());
 
+    }
+
+    public static void updateFinalizedPartOrder(TableView table, PartOrder order)
+    {
+        List<TableColumn> list = table.getColumns();
+        TableColumn partNumberCol = list.get(0);
+        TableColumn nameCol = list.get(1);
+        TableColumn amountOrderedCol = list.get(2);
+        TableColumn actualCostCol = list.get(4);
+        TableColumn invoiceNumberCol = list.get(5);
+        TableColumn dateCol = list.get(6);
+
+        partNumberCol.setCellValueFactory(new PropertyValueFactory<>("partNumber"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        amountOrderedCol.setCellValueFactory(new PropertyValueFactory<>("numberOrdered"));
+        actualCostCol.setCellValueFactory(new PropertyValueFactory<>("suggestedCost"));
+
+        table.getItems().addAll(order.getPartsOrdered());
     }
 
 

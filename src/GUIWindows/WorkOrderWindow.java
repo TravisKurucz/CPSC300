@@ -1,6 +1,8 @@
 package GUIWindows;
 
 import Database.Part;
+import Database.PartOrder;
+import Database.WorkOrder;
 import UpdateTables.UpdatePartOrder;
 import UpdateTables.UpdateWorkOrder;
 import javafx.event.ActionEvent;
@@ -18,34 +20,40 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 /**
- * Created by colto on 2017-11-26.
+ * Created by colton on 2017-11-26.
  */
-public class WorkOrderWindow
-{
-    public static void WorkOrderWindow()
-    {
+public class WorkOrderWindow {
+    public static void WorkOrderWindow() {
         Stage stage = new Stage();
 
         BorderPane borderPending = new BorderPane();
+        BorderPane borderOutstanding = new BorderPane();
 
         Tab pending = new Tab("Pending");
         Tab outstanding = new Tab("Outstanding");
         Tab finalized = new Tab("Finalized");
 
-        TableView<Database.PartOrder> tableViewPending = new TableView<>();
-        TableView<Database.PartOrder> tableViewOutstanding = new TableView();
-        TableView<Database.PartOrder> tableViewFinalized = new TableView();
+        TableView<WorkOrder> tableViewPending = new TableView<>();
+        TableView<WorkOrder> tableViewOutstanding = new TableView();
+        TableView<WorkOrder> tableViewFinalized = new TableView();
 
         Button editSelected = new Button("Edit Selected");
         Button createNew = new Button("Create New");
+        Button submit = new Button("Submit");
+        Button finalize = new Button("Finalize");
 
-        HBox buttons = new HBox(10, editSelected, createNew);
+        HBox buttons = new HBox(10, editSelected, createNew, submit);
+        HBox buttons1 = new HBox(10, finalize);
 
         TabPane tabPane = new TabPane(pending, outstanding, finalized);
 
         Scene scene = new Scene(tabPane, 700, 800);
 
         buttons.setPadding(new Insets(10));
+        buttons.setAlignment(Pos.BOTTOM_CENTER);
+
+        buttons1.setPadding(new Insets(10));
+        buttons1.setAlignment(Pos.BASELINE_CENTER);
 
         pending.setClosable(false);
         outstanding.setClosable(false);
@@ -63,14 +71,18 @@ public class WorkOrderWindow
         borderPending.setBottom(buttons);
         borderPending.setPadding(new Insets(10));
 
+        borderOutstanding.setCenter(tableViewOutstanding);
+        borderOutstanding.setBottom(buttons1);
+        borderOutstanding.setPadding(new Insets(10));
+
         pending.setContent(borderPending);
-        outstanding.setContent(tableViewOutstanding);
+        outstanding.setContent(borderOutstanding);
         finalized.setContent(tableViewFinalized);
 
         buttons.setAlignment(Pos.BOTTOM_CENTER);
         buttons.setMinHeight(40);
 
-        stage.setTitle("Part Order");
+        stage.setTitle("Work Order");
         stage.setScene(scene);
         stage.setMaximized(true);
 
@@ -79,7 +91,7 @@ public class WorkOrderWindow
             public void handle(ActionEvent event) {
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
-                Database.PartOrder selected = tableViewPending.getItems().get(row);
+                WorkOrder selected = tableViewPending.getItems().get(row);
                 CreateNewWorkOrder(tableViewPending, selected);
             }
         });
@@ -88,18 +100,60 @@ public class WorkOrderWindow
         createNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Database.PartOrder order = new Database.PartOrder(null, 0, "Name", "Type", "Supplier");
-                CreateNewWorkOrder(tableViewPending, order);
+                WorkOrder workOrder = new WorkOrder(null, null, null);
+                CreateNewWorkOrder(tableViewPending, workOrder);
+            }
+        });
+
+        finalize.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition pos = tableViewOutstanding.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+                WorkOrder selected = tableViewOutstanding.getItems().get(row);
+                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected);
+            }
+        });
+
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+                WorkOrder selected = tableViewPending.getItems().get(row);
+                for(PartOrder partOrder : selected.getPartsOrderArray())
+                {
+                    UpdatePartOrder.removeOrderPending(partOrder);
+                    UpdatePartOrder.addOrderOutstanding(partOrder);
+                }
+                UpdateWorkOrder.removePending(selected);
+                UpdateWorkOrder.addOutstanding(selected);
+                UpdateWorkOrder.updatePending(tableViewPending);
+                UpdateWorkOrder.updateOutstanding(tableViewOutstanding);
             }
         });
 
         stage.show();
     }
-    
+
+    private static void finalizeSelected(TableView tableOutstanding, TableView tableFinalize, WorkOrder order)
+    {
+        Stage stage = new Stage();
+
+        TableView table = new TableView();
+
+
+
+
+
+        stage.setTitle("Finalize");
+        stage.show();
+    }
+
     /**
      * This is the window that deals with the creation of work orders.
      */
-    public static void CreateNewWorkOrder(TableView tableVeiw, Database.PartOrder order)
+    public static void CreateNewWorkOrder(TableView tableView, WorkOrder order)
     {
         Stage stage = new Stage();
 
@@ -111,7 +165,7 @@ public class WorkOrderWindow
         TextArea unitNameArea = new TextArea();
         TextArea costCodeArea = new TextArea();
 
-        TableView table = new TableView();
+        TableView newWorkOrderTable = new TableView();
         TableColumn typeCol = new TableColumn("Type");
         TableColumn partNumberCol = new TableColumn("Part Number");
         TableColumn partNameCol = new TableColumn("Part Name");
@@ -146,9 +200,9 @@ public class WorkOrderWindow
         unitNumberArea.setMaxHeight(12);
         costCodeArea.setMaxHeight(12);
 
-        table.getColumns().addAll(typeCol, partNumberCol, partNameCol, amountCol, costCol);
+        newWorkOrderTable.getColumns().addAll(typeCol, partNumberCol, partNameCol, amountCol, costCol);
 
-        borderPane.setCenter(table);
+        borderPane.setCenter(newWorkOrderTable);
         borderPane.setTop(vBox);
         borderPane.setBottom(buttons);
         borderPane.setPadding(new Insets(10));
@@ -157,23 +211,62 @@ public class WorkOrderWindow
 
         buttons.setPadding(new Insets(10));
 
-        stage.setTitle("Work Order");
+        if(order.getUnitName() != null)
+        {
+            unitNameArea.setText(order.getUnitName());
+            unitNumberArea.setText(order.getUnitNumber());
+            costCodeArea.setText(order.getCostCode());
+            UpdateWorkOrder.updateWorkOrder(newWorkOrderTable, order);
+        }
+
+        stage.setTitle("Create New Work Order");
         stage.setScene(scene);
         stage.setMaximized(true);
+
         generate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Database.PartOrder order = new Database.PartOrder(null, 0, null, null, null);
-                WorkOrderPO(table, order);
+                WorkOrderPO(newWorkOrderTable, order);
+            }
+        });
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                order.setCostCode(costCodeArea.getText());
+                order.setUnitName(unitNameArea.getText());
+                order.setUnitNumber(unitNumberArea.getText());
+                for(PartOrder partOrder : order.getPartsOrderArray())
+                {
+                    if(UpdatePartOrder.getPending().contains(partOrder))
+                    {}
+                    else
+                    {
+                        UpdatePartOrder.addOrderPending(partOrder);
+                    }
+                }
+
+                if(tableView.getItems().contains(order))
+                {
+                    UpdateWorkOrder.updatePending(tableView);
+                    stage.close();
+                }
+                else
+                {
+                    UpdateWorkOrder.addPending(order);
+                    UpdateWorkOrder.updatePending(tableView);
+                    stage.close();
+                }
             }
         });
 
         stage.show();
     }
 
-    private static void WorkOrderPO(TableView table, Database.PartOrder order)
+    private static void WorkOrderPO(TableView table, WorkOrder workOrder)
     {
         Stage stage = new Stage();
+        PartOrder order = new Database.PartOrder(null, 0, null, "Work Order", null);
 
         //Currently using a random number generator for the part order number
         Random random = new Random();
@@ -203,8 +296,7 @@ public class WorkOrderWindow
         Scene scene = new Scene(border, 700, 800);
 
         //If the the supplied part is already made get the available information
-        if(order.getCost() != null)
-        {
+        if (order.getCost() != null) {
             supplierArea.setText(order.getSupplier());
             poArea.setText(String.valueOf(order.getNumber()));
             UpdatePartOrder.updateNewPartOrder(edit, number, description, ordered, order);
@@ -215,7 +307,7 @@ public class WorkOrderWindow
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                PartOrderWindow.addPartToOrder(edit, number, description, ordered, order);
+                addPartToOrder(edit, number, description, ordered, order, workOrder);
             }
         });
 
@@ -223,11 +315,11 @@ public class WorkOrderWindow
         delete.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                TablePosition position =  edit.getSelectionModel().getSelectedCells().get(0);
+                TablePosition position = edit.getSelectionModel().getSelectedCells().get(0);
                 int row = position.getRow();
                 Part part = edit.getItems().get(row);
                 order.removePart(part);
-                for ( int i = 0; i<edit.getItems().size(); i++) {
+                for (int i = 0; i < edit.getItems().size(); i++) {
                     edit.getItems().clear();
                 }
                 UpdatePartOrder.updateNewPartOrder(edit, number, description, ordered, order);
@@ -241,21 +333,19 @@ public class WorkOrderWindow
                 order.setNumber(Integer.valueOf(poArea.getText()));
                 order.setSupplier(supplierArea.getText());
                 order.setCost("Cost");
-                order.setOrderType("Type");
                 order.setOrderBy("Name");
-                if(table.getItems().contains(order))
-                {
-                    UpdateWorkOrder.updateWorkOrder(table);
+                workOrder.addPartOrders(order);
+                if (table.getItems().contains(order)) {
+                    UpdateWorkOrder.updateWorkOrder(table, workOrder);
                     stage.close();
-                }
-                else {
-                    UpdateWorkOrder.updateWorkOrder(table);
+                } else {
+                    UpdateWorkOrder.updateWorkOrder(table, workOrder);
                     stage.close();
                 }
             }
         });
 
-        stage.setTitle("Create New");
+        stage.setTitle("Generate PO");
 
         supplier.setStyle("-fx-font: 18 arial");
 
@@ -298,4 +388,84 @@ public class WorkOrderWindow
         table.getColumns().addAll(unitNumber, unitName, costCode,
                 partOrders);
     }
+
+
+    /**
+     * The window that opens when you need to add another part to the part order.
+     *
+     * @param table           The table from the previous window that the parts will be added to.
+     * @param partNumber      The column that contains the partNumbers from the previous window.
+     * @param partDescription The column that contains the description of the part from the last window.
+     * @param numberOrdered   The column that contains the number of ordered parts from the last window
+     * @param order           The part order that has been created.
+     */
+    private static void addPartToOrder(TableView table, TableColumn partNumber, TableColumn partDescription,
+                                       TableColumn numberOrdered, PartOrder order, WorkOrder workOrder)
+    {
+        Stage stage = new Stage();
+        Text number = new Text("Number: ");
+        Text description = new Text("Description");
+        Text amount = new Text("Amount");
+        Text error = new Text();
+        //The are where the user will input the part number
+        TextArea numberArea = new TextArea();
+        //The area where the description of the part will be displayed
+        TextArea descriptionArea = new TextArea();
+        //The are where the user will input the number of parts they want to order.
+        TextArea amountArea = new TextArea();
+        BorderPane borderPane = new BorderPane();
+        Button save = new Button("Save");
+        HBox hBox = new HBox();
+
+        hBox.setAlignment(Pos.BASELINE_CENTER);
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String partNum = numberArea.getText();
+                String numOrder = amountArea.getText();
+                //Checks to make sure that the strings are not empty and that the amount ordered only contains numbers
+                if (numOrder.trim().isEmpty() || partNum.trim().isEmpty() || !numOrder.matches("^[0-9]*$")) {
+                    error.setText("Please make sure all the lines are filled.");
+                } else {
+                    //Sets all the values of the part that is being created.
+                    order.setPartsOrdered(new Part(numberArea.getText(), "Name", "Cost",
+                            Integer.valueOf(amountArea.getText())));
+                    //Clears the table before reloading the new information
+                    for (int i = 0; i < table.getItems().size(); i++) {
+                        table.getItems().clear();
+                    }
+                    Part part = new Part(partNum, "Name", "cost", Integer.valueOf(numOrder));
+                    workOrder.addParts(part);
+                    //Updates the table with the new addition
+                    UpdatePartOrder.updateNewPartOrder(table, partNumber, partDescription, numberOrdered, order);
+                    //Closes the stage afterwards
+                    stage.close();
+                }
+            }
+        });
+
+        numberArea.setWrapText(true);
+        numberArea.setMaxHeight(12);
+        numberArea.setMaxWidth(300);
+
+        descriptionArea.setWrapText(true);
+        descriptionArea.setMaxHeight(12);
+        descriptionArea.setMaxWidth(300);
+
+        amountArea.setWrapText(true);
+        amountArea.setMaxHeight(12);
+        amountArea.setMaxWidth(300);
+
+        VBox vBox = new VBox(number, numberArea, description, descriptionArea, amount, amountArea, error);
+        vBox.setAlignment(Pos.CENTER);
+
+        borderPane.setCenter(vBox);
+        borderPane.setBottom(save);
+        Scene scene = new Scene(borderPane, 350, 300);
+        stage.setScene(scene);
+        stage.setTitle("Add Part");
+        stage.show();
+    }
+
 }
