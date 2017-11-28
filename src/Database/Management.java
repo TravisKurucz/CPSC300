@@ -15,6 +15,20 @@ import java.util.ArrayList;
 public class Management {
 
 
+    public static boolean addObject(String fileName, Object newObject) {
+        try {
+            File file = new File(fileName);
+            return addObject(file, newObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+
 
     /**
      *
@@ -22,6 +36,7 @@ public class Management {
      * @param newObject is the object that will be added to the arraylist existing in the .ser file
      * @return true if the process was successful, false if the process failed
      */
+
 
 
 
@@ -41,9 +56,6 @@ public class Management {
                 //generate the stream to read from the .ser file
                 FileInputStream fileIn = new FileInputStream(file);
                 ObjectInputStream ObIn = new ObjectInputStream(fileIn);
-
-                //read it and return it
-                ArrayList returnArray = new ArrayList();
 
                 Object gamma = ObIn.readObject();
 
@@ -86,8 +98,12 @@ public class Management {
 
     /**
      *
+     * @param filePath is the file that we're trying to read from.
      *
-     * @return an ArrayList of all objects in the data file we're reading     *
+     * @return an ArrayList of all objects in the data file we're reading
+     *
+     *This Method simply creates a file object then calls the readList with the File object rather than the filepath
+     * String
      */
 
     public static ArrayList<Object> readList(String filePath) throws Exception{
