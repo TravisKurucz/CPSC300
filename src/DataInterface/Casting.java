@@ -12,8 +12,9 @@ public class Casting {
 
     public static ArrayList<Customer> castToCustomers(ArrayList<Object> list){
         ArrayList<Customer> customerList = new ArrayList();
+        System.out.println(list.size());
         for (int i=0; i<list.size();i++){
-            customerList.set(i, (Customer)list.get(i));
+            customerList.add((Customer)list.get(i));
         }
         return customerList;
     }
@@ -21,7 +22,7 @@ public class Casting {
     public static ArrayList<Equipment> castToEquipment(ArrayList<Object> list){
         ArrayList<Equipment> equipmentList = new ArrayList();
         for (int i=0; i<list.size();i++){
-            equipmentList.set(i, (Equipment)list.get(i));
+            equipmentList.add((Equipment)list.get(i));
         }
         return equipmentList;
     }
@@ -29,7 +30,7 @@ public class Casting {
     public static ArrayList<PartOrder> castToPartOrders(ArrayList<Object> list){
         ArrayList<PartOrder> partOrderList = new ArrayList();
         for (int i=0; i<list.size();i++){
-            partOrderList.set(i, (PartOrder)list.get(i));
+            partOrderList.add((PartOrder)list.get(i));
         }
         return partOrderList;
     }
@@ -37,7 +38,7 @@ public class Casting {
     public static ArrayList<Part> castToParts(ArrayList<Object> list){
         ArrayList<Part> partList = new ArrayList();
         for (int i=0; i<list.size();i++){
-            partList.set(i, (Part)list.get(i));
+            partList.add((Part)list.get(i));
         }
         return partList;
     }
@@ -45,7 +46,7 @@ public class Casting {
     public static ArrayList<Supplier> castToSuppliers(ArrayList<Object> list){
         ArrayList<Supplier> supplierList = new ArrayList();
         for (int i=0; i<list.size();i++){
-            supplierList.set(i, (Supplier)list.get(i));
+            supplierList.add((Supplier)list.get(i));
         }
         return supplierList;
     }
@@ -56,7 +57,7 @@ public class Casting {
     public static ArrayList<User> castToUsers(ArrayList<Object> list) {
         ArrayList<User> userList = new ArrayList();
         for (int i=0; i<list.size();i++){
-            userList.set(i, (User)list.get(i));
+            userList.add((User)list.get(i));
         }
         return userList;
     }
@@ -64,7 +65,7 @@ public class Casting {
     public static ArrayList<WorkOrder> castToWorkOrders(ArrayList<Object> list){
         ArrayList<WorkOrder> workOrderList = new ArrayList();
         for (int i=0; i<list.size();i++){
-            workOrderList.set(i, (WorkOrder)list.get(i));
+            workOrderList.add((WorkOrder)list.get(i));
         }
         return workOrderList;
     }

@@ -1,5 +1,6 @@
 package GUIWindows;
 
+import DataInterface.Casting;
 import Database.Customer;
 import Database.Management;
 import javafx.event.ActionEvent;
@@ -66,9 +67,7 @@ public class Test
                             list.add(cTwo);
                             list.add(cThree);
                          */
-                        Management.addObject(file, list);
-
-
+                        Management.writeList(file, list);
 
                         // }
 
@@ -92,11 +91,7 @@ public class Test
                     ArrayList l = Management.readList(file);
                     ArrayList<Customer> list = new ArrayList<Customer>();
                     System.out.println("trying to loop");
-                    for (int i=0; i<l.size(); i++){
-                        list.add((Customer)l.get(i));
-                        System.out.println("added "+list.get(i).getName());
-                    }
-
+                    list = Casting.castToCustomers(l);
                     one.setText(list.get(0).getName());
                     two.setText(list.get(0).getEmail());
                     three.setText(list.get(0).getPhoneNumber());
