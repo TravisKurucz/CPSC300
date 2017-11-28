@@ -86,19 +86,16 @@ public class Management {
 
     /**
      *
-     * @param file is the file that we're trying to read from.
      *
-     * @return an ArrayList of all objects in the data file we're reading
-     *
-     *
+     * @return an ArrayList of all objects in the data file we're reading     *
      */
 
-    public static ArrayList<Object> readList(String filePath){
+    public static ArrayList<Object> readList(String filePath) throws Exception{
         try {
             File file = new File(filePath);
             return readList(file);
         } catch (Exception e){
-            return null;
+            throw e;
         }
     }
 

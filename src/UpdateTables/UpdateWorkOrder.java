@@ -91,8 +91,47 @@ public class UpdateWorkOrder
         //Sets the items of each column from the observable list finalized.
         table.setItems(finalized);
     }
-    public static void updateWorkOrder(TableView tableView)
+    public static void updateWorkOrder(TableView table, WorkOrder order)
     {
+        List<TableColumn> list = table.getColumns();
+        TableColumn typeCol = list.get(0);
+        TableColumn partNumberCol = list.get(1);
+        TableColumn partNameCol = list.get(2);
+        TableColumn amountCol = list.get(3);
+        TableColumn costCol = list.get(4);
 
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        partNumberCol.setCellValueFactory(new PropertyValueFactory<>("partNumber"));
+        partNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        amountCol.setCellValueFactory(new PropertyValueFactory<>("numberOrdered"));
+        costCol.setCellValueFactory(new PropertyValueFactory<>("suggestedCost"));
+
+        table.getItems().addAll(order.getParts());
     }
+
+    public static void addPending(WorkOrder order)
+    {
+        pending.add(order);
+    }
+    public static void addOutstanding(WorkOrder order)
+    {
+        outstanding.add(order);
+    }
+    public static void addFinalize(WorkOrder order)
+    {
+        finalized.add(order);
+    }
+    public static void removePending(WorkOrder order)
+    {
+        pending.remove(order);
+    }
+    public static void removeOutstanding(WorkOrder order)
+    {
+        outstanding.remove(order);
+    }
+    public static void removeFinalized(WorkOrder order)
+    {
+        finalized.remove(order);
+    }
+
 }
