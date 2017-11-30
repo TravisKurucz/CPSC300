@@ -2,28 +2,31 @@ package Database;
 
 
 import javafx.beans.property.SimpleStringProperty;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by colto on 2017-11-07.
  */
-public class PartOrder
+public class PartOrder implements Serializable
 {
-    private SimpleStringProperty orderType;
-    private SimpleStringProperty cost;
+    private String orderType;
+    private String cost;
     private ArrayList<Part> partsOrdered;
     private int number;
-    private SimpleStringProperty supplier;
-    private SimpleStringProperty orderBy;
+    private String supplier;
+    private String orderBy;
+    private char status;
 
 
     //constructor
     public PartOrder(String cost, int number, String orderBy, String orderType, String supplier) {
-        this.cost = new SimpleStringProperty(cost);
+        this.cost = cost;
         this.number = number;
-        this.supplier = new SimpleStringProperty(supplier);
-        this.orderBy = new SimpleStringProperty(orderBy);
-        this.orderType = new SimpleStringProperty(orderType);
+        this.supplier = supplier;
+        this.orderBy = orderBy;
+        this.orderType = orderType;
         this.partsOrdered = new ArrayList<>();
 
     }
@@ -40,40 +43,37 @@ public class PartOrder
     }
 
     public String getSupplier() {
-        return supplier.get();
+        return supplier;
     }
 
     public void setSupplier(String supplier) {
-        this.supplier.set(supplier);
+        this.supplier = supplier;
     }
 
     public String getOrderBy() {
-        return orderBy.get();
+        return orderBy;
     }
 
     public void setOrderBy(String orderBy) {
-        this.orderBy.set(orderBy);
+        this.orderBy = orderBy;
     }
 
     public String getCost() {
-        return cost.get();
+        return cost;
     }
 
     public void setCost(String cost) {
-        this.cost.set(cost);
+        this.cost = cost;
     }
 
     public String getOrderType() {
-        return orderType.get();
+        return orderType;
     }
 
     public void setOrderType(String orderType) {
-        this.orderType.set(orderType);
+        this.orderType = orderType;
     }
 
-    public SimpleStringProperty supplierProperty() {
-        return supplier;
-    }
 
     public ArrayList<Part> getPartsOrdered() {
         return partsOrdered;
@@ -85,5 +85,11 @@ public class PartOrder
 
     public void removePart (Part part){partsOrdered.remove(part);}
 
+    public char getStatus() {
+        return status;
+    }
 
+    public void setStatus(char status) {
+        this.status = status;
+    }
 }

@@ -1,5 +1,6 @@
 package GUIWindows;
 
+import Database.Management;
 import Database.Part;
 import Database.PartOrder;
 import UpdateTables.UpdatePartOrder;
@@ -100,7 +101,9 @@ public class PartOrderWindow
         createNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                PartOrder order = new Database.PartOrder(null, 0, "Name", "Type", "Supplier");
+                PartOrder order = new PartOrder(null, 0, null, null,
+                        null);
+                order.setStatus('P');
                 createNewPartOrder(tableViewPending, order);
             }
         });
@@ -111,10 +114,12 @@ public class PartOrderWindow
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 PartOrder selected = tableViewPending.getItems().get(row);
+                selected.setStatus('O');
                 UpdatePartOrder.removeOrderPending(selected);
                 UpdatePartOrder.addOrderOutstanding(selected);
                 UpdatePartOrder.updatePending(tableViewPending);
                 UpdatePartOrder.updateOutstanding(tableViewOutstanding);
+                UpdatePartOrder.writeToFile();
             }
         });
 
@@ -207,12 +212,16 @@ public class PartOrderWindow
                 order.setCost("Cost");
                 order.setOrderType("Type");
                 order.setOrderBy("Name");
+
+
                 if(table.getItems().contains(order))
                 {
+                    UpdatePartOrder.writeToFile();
                     UpdatePartOrder.updatePending(table);
                     stage.close();
                 }
                 else {
+                    Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser",  order);
                     UpdatePartOrder.addOrderPending(order);
                     UpdatePartOrder.updatePending(table);
                     stage.close();
@@ -401,6 +410,8 @@ public class PartOrderWindow
                 UpdatePartOrder.addOrderFinalized(order);
                 UpdatePartOrder.updateOutstanding(outsandingTable);
                 UpdatePartOrder.updateFinalized(finalizedTable);
+                order.setStatus('F');
+                UpdatePartOrder.writeToFile();
                 stage.close();
             }
         });

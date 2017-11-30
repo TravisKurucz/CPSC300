@@ -50,6 +50,7 @@ public class Inventory
 
         Scene scene = new Scene(borderPane);
 
+        stage.setTitle("Inventory");
         stage.setScene(scene);
         stage.show();
     }

@@ -1,5 +1,6 @@
 package UpdateTables;
 
+import Database.Management;
 import Database.Part;
 import Database.PartOrder;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,6 +12,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,20 +23,78 @@ import java.util.List;
 public class UpdatePartOrder
 {
     //These list hold all the information that will be written to each table.
-    private static ObservableList<PartOrder> pending = FXCollections.observableArrayList(new PartOrder("123" ,25, "Bob", "Inventory", "NAPA" )
-            , new PartOrder("123" , 66, "Smith", "WorkOrder", "Aro" ));
+    private static ObservableList<PartOrder> pending;
 
-    private static ObservableList<PartOrder> outstanding = FXCollections.observableArrayList(new PartOrder("456" ,25, "Bob", "Inventory", "NAPA" )
-            , new PartOrder("456" , 66, "Smith", "WorkOrder", "Aro" ));
+    private static ObservableList<PartOrder> outstanding;
 
-    private static ObservableList<PartOrder> finalized = FXCollections.observableArrayList(new PartOrder("789" ,25, "Bob", "Inventory", "NAPA" )
-            , new PartOrder("789" , 66, "Smith", "WorkOrder", "Aro" ));
+    private static ObservableList<PartOrder> finalized;
 
+
+    public static void setObservableList()
+    {
+        System.out.println("observable");
+        try {
+            System.out.println("try");
+            ArrayList array = Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser");
+            System.out.println("Array size is " + array.size());
+            ArrayList<PartOrder> array0 = new ArrayList();
+            ArrayList<PartOrder> array1 = new ArrayList();
+            ArrayList<PartOrder> array2 = new ArrayList<>();
+            pending = FXCollections.observableArrayList(array0);
+            outstanding = FXCollections.observableArrayList(array1);
+            finalized = FXCollections.observableArrayList(array2);
+            for(int i = 0; i<array.size(); i++)
+            {
+                System.out.println("for");
+                Object obj = array.get(i);
+                System.out.println("In for loop");
+                PartOrder order = (PartOrder) obj;
+                switch (order.getStatus())
+                {
+                    case ('P'):
+                        System.out.println("Added to pending");
+                        pending.add(order);
+                        break;
+                    case  ('O'):
+                        outstanding.add(order);
+                        break;
+                    case ('F'):
+                        finalized.add(order);
+                        break;
+                }
+            }
+        }
+        catch (Exception io)
+        {
+            System.out.println("in catch");
+            ArrayList<PartOrder> array = new ArrayList();
+            ArrayList<PartOrder> array1 = new ArrayList();
+            ArrayList<PartOrder> array2 = new ArrayList<>();
+            pending = FXCollections.observableArrayList(array);
+            outstanding = FXCollections.observableArrayList(array1);
+            finalized = FXCollections.observableArrayList(array2);
+        }
+    }
+
+    public static void writeToFile()
+    {
+        File file = new File("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser");
+        ArrayList array = new ArrayList();
+        array.addAll(pending);
+        array.addAll(outstanding);
+        array.addAll(finalized);
+        try{
+            Management.writeList(file, array);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
     public static void addOrderPending(PartOrder order)
     {
         pending.addAll(order);
     }
-
     public static void addOrderFinalized(PartOrder order)
     {
         finalized.addAll(order);

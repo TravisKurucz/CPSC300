@@ -22,11 +22,11 @@ public class Part implements java.io.Serializable {
         numberOrdered = 0;
     }
 
-    public Part(String partNumber, String name, String suggestedCost, int numberOnHand){
+    public Part(String partNumber, String name, String suggestedCost, int numberOrdered){
         this.partNumber = partNumber;
         this.name = name;
         this.suggestedCost = suggestedCost;
-        this.numOnHand = numberOnHand;
+        this.numberOrdered = numberOrdered;
     }
 
     public String getName() {
@@ -76,4 +76,5 @@ public class Part implements java.io.Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
 }
