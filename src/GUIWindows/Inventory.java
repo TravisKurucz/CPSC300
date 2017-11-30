@@ -1,5 +1,6 @@
 package GUIWindows;
 
+import Database.Management;
 import Database.Part;
 import UpdateTables.UpdateInventory;
 import javafx.event.ActionEvent;
@@ -20,6 +21,7 @@ public class Inventory
 {
     public static void InventoryList()
     {
+
         Stage stage = new Stage();
 
         Button add = new Button("Add");
@@ -31,6 +33,8 @@ public class Inventory
         TableColumn numOnHand = new TableColumn("On Hand");
 
         table.getColumns().addAll(partNumber, name, suggestedCost, numOnHand);
+
+        UpdateInventory.updateInventory(table, partNumber, name, suggestedCost, numOnHand);
 
         BorderPane borderPane = new BorderPane(table);
 
@@ -46,6 +50,7 @@ public class Inventory
 
         Scene scene = new Scene(borderPane);
 
+        stage.setTitle("Inventory");
         stage.setScene(scene);
         stage.show();
     }
@@ -98,7 +103,11 @@ public class Inventory
                 Part part = new Part(partNumberArea.getText(), descriptionArea.getText(), suggestCostArea.getText()
                 ,Integer.valueOf(onHandArea.getText()));
                 UpdateInventory.addPart(part);
+                for ( int i = 0; i<table.getItems().size(); i++) {
+                    table.getItems().clear();
+                }
                 UpdateInventory.updateInventory(table, partNumber, name, suggestedCost, numOnHand);
+                Management.addObject("C:/CPSC300/CPSC300/src/Database/parts.ser", part);
                 stage.close();
             }
         });

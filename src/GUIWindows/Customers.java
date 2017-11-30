@@ -1,8 +1,16 @@
 package GUIWindows;
 
+import Database.Customer;
+import Database.Management;
+import UpdateTables.UpdateCustomers;
+import UpdateTables.UpdateInventory;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -15,18 +23,54 @@ import javafx.stage.Stage;
  */
 public class Customers
 {
+    public static void CustomerList()
+    {
+        Stage stage = new Stage();
+
+        Button add = new Button("Add");
+
+        TableView table = new TableView();
+        TableColumn name = new TableColumn("Name");
+        TableColumn address = new TableColumn("Address");
+        TableColumn phoneNumber = new TableColumn("Phone Number");
+        TableColumn email = new TableColumn("Email");
+
+        table.getColumns().addAll(name, address, phoneNumber, email);
+
+        UpdateCustomers.updateCustomer(table, name, address, phoneNumber, email);
+
+        BorderPane borderPane = new BorderPane(table);
+
+        borderPane.setBottom(add);
+
+        add.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Customers(table, name, address, phoneNumber, email);
+
+            }
+        });
+
+        Scene scene = new Scene(borderPane);
+
+        stage.setTitle("Customers");
+        stage.setScene(scene);
+        stage.show();
+    }
+
     /**
      * This is the window that opens to let you browse the customers and add or edit customers if you have
      * admin privileges.
      */
-    public static void Customers()
+    public static void Customers(TableView table, TableColumn name, TableColumn address, TableColumn phoneNumber,
+    TableColumn email)
     {
         Stage stage = new Stage();
-        Text name = new Text("Name:");
+        Text nameText = new Text("Name:");
         Text first = new Text("First:");
         Text last = new Text("Last:");
-        Text address = new Text("Address:");
-        Text email = new Text("Email:");
+        Text addressText = new Text("Address:");
+        Text emailText = new Text("Email:");
         Text phone = new Text("Phone Number:");
 
         TextArea firstName = new TextArea();
@@ -36,7 +80,6 @@ public class Customers
         TextArea addressArea = new TextArea();
 
         Button save = new Button("Save");
-        Button edit = new Button("Edit");
 
         firstName.setMaxHeight(12);
         lastName.setMaxHeight(12);
@@ -57,18 +100,39 @@ public class Customers
         addressArea.setMaxWidth(200);
 
         HBox names = new HBox(10, firstName, lastName);
-        HBox hBox = new HBox(170, address, email);
+        HBox hBox = new HBox(170, addressText, emailText);
         HBox hBox1 = new HBox(10, addressArea, emailArea);
-        HBox hBox2 = new HBox(10, save, edit);
+        HBox hBox2 = new HBox(10, save);
         HBox hBox3 = new HBox(190, first, last);
 
-        VBox vBox = new VBox(10, name, hBox3, names,hBox, hBox1, phone, phoneArea, hBox2);
+        VBox vBox = new VBox(10, nameText, hBox3, names,hBox, hBox1, phone, phoneArea, hBox2);
 
         BorderPane borderPane = new BorderPane(vBox);
 
         borderPane.setPadding(new Insets(10));
 
         Scene scene = new Scene(borderPane);
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Customer customer = new Customer();
+                customer.setName(firstName.getText() + " " + lastName.getText());
+                customer.setAddress(addressArea.getText());
+                customer.setEmail(emailArea.getText());
+                customer.setPhoneNumber(phoneArea.getText());
+
+                UpdateCustomers.addCustomer(customer);
+                for ( int i = 0; i<table.getItems().size(); i++) {
+                    table.getItems().clear();
+                }
+                UpdateCustomers.updateCustomer(table, name, address, phoneNumber, email);
+                Management.addObject("C:/CPSC300/CPSC300/src/Database/customers.ser", customer);
+                stage.close();
+            }
+        });
+
+
         stage.setScene(scene);
         stage.setTitle("Customers");
         stage.show();

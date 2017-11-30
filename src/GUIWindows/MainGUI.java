@@ -1,5 +1,8 @@
 package GUIWindows;
+import UpdateTables.UpdateCustomers;
 import UpdateTables.UpdateInventory;
+import UpdateTables.UpdatePartOrder;
+import UpdateTables.UpdateSuppliers;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,7 +26,11 @@ public class MainGUI
      */
     public static void MainGUI()
     {
+        System.out.println("Main");
         UpdateInventory.setObservableList();
+        UpdateCustomers.setObservableList();
+        UpdateSuppliers.setObservableList();
+        UpdatePartOrder.setObservableList();
 
         Stage primaryStage = new Stage();
 
@@ -76,6 +83,7 @@ public class MainGUI
         partOrder.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
                 PartOrderWindow.PartOrderWindow();
             }
         });
@@ -108,7 +116,7 @@ public class MainGUI
         customers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Customers.Customers();
+                Customers.CustomerList();
             }
         });
 
@@ -116,7 +124,7 @@ public class MainGUI
         suppliers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Suppliers.Suppliers();
+                Suppliers.SupplierList();
             }
         });
 
