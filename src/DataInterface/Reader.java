@@ -49,5 +49,4 @@ public class Reader {
         }
         return false;
     }//end check password
-
 }
