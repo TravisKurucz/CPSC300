@@ -9,7 +9,7 @@ public class Login {
 
     //take username and password from the login attempt, and check if password matches hashed password
     //uses Java's MD5 message digest algorithm to hash the password, which generates a hexadecimal number
-    public boolean login(String username, String password)
+    public static boolean login(String username, String password)
     {
         //the password user input
         String passwordInput = password;
@@ -46,7 +46,7 @@ public class Login {
 
     //this method will be used to create a hashed password when a new user makes an account
     //privilege is either 0 for general users, 1 for admin
-    public void createUser(String username, String password, String name, int privilege)
+    public static void createUser(String username, String password, String name, int privilege)
     {
         //uses same hashing method as above, and saves into database
         String passwordToHash = password;
