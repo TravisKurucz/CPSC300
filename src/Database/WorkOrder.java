@@ -10,43 +10,44 @@ import java.util.ArrayList;
  */
 public class WorkOrder implements java.io.Serializable
 {
-    private SimpleStringProperty unitNumber;
-    private SimpleStringProperty unitName;
-    private SimpleStringProperty costCode;
+    private String unitNumber;
+    private String unitName;
+    private String costCode;
+    private char status;
     private ArrayList<PartOrder> partOrders;
     private ArrayList<Part> parts;
 
 
     public WorkOrder(String unitNumber, String unitName, String costCode) {
-        this.unitNumber = new SimpleStringProperty(unitNumber);
-        this.unitName = new SimpleStringProperty(unitName);
-        this.costCode = new SimpleStringProperty(costCode);
+        this.unitNumber = unitNumber;
+        this.unitName = unitName;
+        this.costCode = costCode;
         partOrders = new ArrayList<>();
         parts = new ArrayList<>();
     }
 
     public String getUnitNumber() {
-        return unitNumber.get();
+        return unitNumber;
     }
 
     public void setUnitNumber(String unitNumber) {
-        this.unitNumber.set(unitNumber);
+        this.unitNumber = unitNumber;
     }
 
     public String getUnitName() {
-        return unitName.get();
+        return unitName;
     }
 
     public void setUnitName(String unitName) {
-        this.unitName.set(unitName);
+        this.unitName = unitName;
     }
 
     public String getCostCode() {
-        return costCode.get();
+        return costCode;
     }
 
     public void setCostCode(String costCode) {
-        this.costCode.set(costCode);
+        this.costCode = costCode;
     }
 
     public PartOrder getPartOrder() {
@@ -68,5 +69,13 @@ public class WorkOrder implements java.io.Serializable
 
     public void addParts(Part parts) {
         this.parts.add(parts);
+    }
+
+    public char getStatus() {
+        return status;
+    }
+
+    public void setStatus(char status) {
+        this.status = status;
     }
 }

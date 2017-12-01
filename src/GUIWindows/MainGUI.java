@@ -1,8 +1,5 @@
 package GUIWindows;
-import UpdateTables.UpdateCustomers;
-import UpdateTables.UpdateInventory;
-import UpdateTables.UpdatePartOrder;
-import UpdateTables.UpdateSuppliers;
+import UpdateTables.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,11 +23,12 @@ public class MainGUI
      */
     public static void MainGUI()
     {
-        System.out.println("Main");
         UpdateInventory.setObservableList();
         UpdateCustomers.setObservableList();
         UpdateSuppliers.setObservableList();
         UpdatePartOrder.setObservableList();
+        UpdateWorkOrder.setObservableList();
+        UpdateEquipment.setObservableList();
 
         Stage primaryStage = new Stage();
 
@@ -44,9 +42,10 @@ public class MainGUI
         Button inventory = new Button("Inventory");
         Button customers = new Button("Customers");
         Button suppliers = new Button("Suppliers");
+        Button equipment = new Button("Equipment");
         Button test = new Button("Test");
 
-        VBox vBox = new VBox(10, inventory, suppliers, customers);
+        VBox vBox = new VBox(10, inventory, suppliers, customers, equipment);
         VBox vbButtons = new VBox(10, partOrder, workOrder, report, test);
 
         GridPane grid = new GridPane();
@@ -57,6 +56,7 @@ public class MainGUI
         workOrder.setMaxWidth(Double.MAX_VALUE);
         report.setMaxWidth(Double.MAX_VALUE);
         inventory.setMaxWidth(Double.MAX_VALUE);
+        equipment.setMaxWidth(Double.MAX_VALUE);
         customers.setMaxWidth(Double.MAX_VALUE);
         suppliers.setMaxWidth(Double.MAX_VALUE);
         test.setMaxWidth(Double.MAX_VALUE);
@@ -125,6 +125,13 @@ public class MainGUI
             @Override
             public void handle(ActionEvent event) {
                 Suppliers.SupplierList();
+            }
+        });
+
+        equipment.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                EquipmentWindow.EquipmentWindow();
             }
         });
 

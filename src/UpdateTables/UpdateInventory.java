@@ -46,4 +46,30 @@ public class UpdateInventory
     {
         inventory.addAll(part);
     }
+
+    public static boolean contains(String number)
+    {
+        for(Object obj: inventory)
+        {
+            Part part = (Part) obj;
+            if (part.getPartNumber().trim().equals(number))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Part getPart(String number)
+    {
+        for(Object obj: inventory)
+        {
+            Part part = (Part) obj;
+            if (part.getPartNumber().equals(number))
+            {
+                return part;
+            }
+        }
+        return null;
+    }
 }

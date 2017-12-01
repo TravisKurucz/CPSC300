@@ -1,7 +1,5 @@
 package Database;
 
-import javafx.scene.Scene;
-
 /**
  * Created by Travis on 2017-11-09.
  */
@@ -12,6 +10,9 @@ public class Part implements java.io.Serializable {
     private int numberOrdered;
     private static int numOnHand;
     private String type;
+    private String date;
+    private String invoiceNumber;
+    private String amountReceived;
 
     //constructors:
 
@@ -77,4 +78,27 @@ public class Part implements java.io.Serializable {
         this.type = type;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public String getAmountReceived() {
+        return amountReceived;
+    }
+
+    public void setAmountReceived(String amountReceived) {
+        this.amountReceived = amountReceived;
+    }
 }

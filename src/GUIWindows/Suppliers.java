@@ -7,6 +7,7 @@ import UpdateTables.UpdateSuppliers;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -37,13 +38,19 @@ public class Suppliers
         TableColumn phoneNumber = new TableColumn("Phone Number");
         TableColumn email = new TableColumn("Email");
 
+        HBox hBox = new HBox(add);
+
         table.getColumns().addAll(name, address, phoneNumber, email);
 
         UpdateSuppliers.updateSuppliers(table, name, address, phoneNumber, email);
 
+        hBox.setAlignment(Pos.BOTTOM_CENTER);
+        hBox.setPadding(new Insets(10));
+
         BorderPane borderPane = new BorderPane(table);
 
-        borderPane.setBottom(add);
+        borderPane.setBottom(hBox);
+        borderPane.setPadding(new Insets(10));
 
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -71,6 +78,7 @@ public class Suppliers
         Text addressText = new Text("Address:");
         Text emailText = new Text("Email:");
         Text phone = new Text("Phone Number:");
+        Text error = new Text();
 
         TextArea supplierCodeArea = new TextArea();
         TextArea phoneArea = new TextArea();
@@ -99,7 +107,9 @@ public class Suppliers
         HBox hBox1 = new HBox(10, addressArea, emailArea);
         HBox hBox2 = new HBox(10, save, edit);
 
-        VBox vBox = new VBox(10, supplierCode, supplierCodeArea, hBox, hBox1, phone, phoneArea, hBox2);
+        hBox2.setAlignment(Pos.BOTTOM_CENTER);
+
+        VBox vBox = new VBox(10, supplierCode, supplierCodeArea, hBox, hBox1, phone, phoneArea, error, hBox2);
 
         BorderPane borderPane = new BorderPane(vBox);
 
@@ -108,15 +118,20 @@ public class Suppliers
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Supplier supplier = new Supplier(addressArea.getText(), emailArea.getText(), supplierCodeArea.getText(),
-                        phoneArea.getText());
-                UpdateSuppliers.addSupplier(supplier);
-                for ( int i = 0; i<table.getItems().size(); i++) {
-                    table.getItems().clear();
+                if (addressArea.getText().trim().isEmpty() || emailArea.getText().trim().isEmpty() ||
+                        supplierCodeArea.getText().trim().isEmpty() || phoneArea.getText().trim().isEmpty()) {
+                    error.setText("Please make sure all the areas are filled in.");
+                } else {
+                    Supplier supplier = new Supplier(addressArea.getText(), emailArea.getText(), supplierCodeArea.getText(),
+                            phoneArea.getText());
+                    UpdateSuppliers.addSupplier(supplier);
+                    for (int i = 0; i < table.getItems().size(); i++) {
+                        table.getItems().clear();
+                    }
+                    UpdateSuppliers.updateSuppliers(table, name, address, phoneNumber, email);
+                    Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\suppliers.ser", supplier);
+                    stage.close();
                 }
-                UpdateSuppliers.updateSuppliers(table, name, address, phoneNumber, email);
-                Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\suppliers.ser", supplier);
-                stage.close();
             }
         });
         Scene scene = new Scene(borderPane);
