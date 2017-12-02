@@ -26,7 +26,7 @@ public class Suppliers
 {
 
 
-    public static void SupplierList(String nameUser, int privilege)
+    public static void SupplierList(String nameUser, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -55,7 +55,7 @@ public class Suppliers
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Suppliers(table, name, address, phoneNumber, email, nameUser, privilege);
+                Suppliers(table, name, address, phoneNumber, email, nameUser, privilege, path);
 
             }
         });
@@ -71,7 +71,7 @@ public class Suppliers
      * privileges.
      */
     public static void Suppliers(TableView table, TableColumn name, TableColumn address, TableColumn phoneNumber,
-                                 TableColumn email, String nameUser, int privilege)
+                                 TableColumn email, String nameUser, int privilege, String path)
     {
         Stage stage = new Stage();
         Text supplierCode = new Text("Supplier Code:");
@@ -129,7 +129,7 @@ public class Suppliers
                         table.getItems().clear();
                     }
                     UpdateSuppliers.updateSuppliers(table, name, address, phoneNumber, email);
-                    Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\suppliers.ser", supplier);
+                    Management.addObject(path + "\\suppliers.ser", supplier);
                     stage.close();
                 }
             }

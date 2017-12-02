@@ -1,3 +1,4 @@
+import Database.Management;
 import Database.User;
 import UpdateTables.UpdateUser;
 import javafx.application.Application;
@@ -10,19 +11,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import LoginSystem.*;
 
 /**
  * This is where the program starts and where the GUI is built.
  */
 public class GUI extends Application {
 
+    private static String path;
     /**
      * The main method that starts the login GUI and where the rest of the program is created from.
      * @param args The command line args
      */
     public static void main(String[] args) {
-
-        UpdateUser.setObservableList();
+        path = Management.createFiles();
+        Login.createUser("admin", "password", "name", 1, path);
+        UpdateUser.setObservableList(path);
         launch(args);
     }
 
@@ -68,24 +72,17 @@ public class GUI extends Application {
 
         primaryStage.setScene(scene);
 
+
+
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(UpdateUser.contains(loginArea.getText()))
-                {
+
+                if( Login.login(loginArea.getText(), pass.getText(), path)) {
                     User user = UpdateUser.getUser(loginArea.getText());
-                    if(user.getPassword().equals(pass.getText()))
-                    {
-                        GUIWindows.MainGUI.MainGUI(user.getName(), user.getPrivilege());
-                        primaryStage.close();
-                    }
-                    else
-                    {
-                        error.setText("User name or password incorrect");
-                    }
-                }
-                else
-                {
+                    GUIWindows.MainGUI.MainGUI(user.getName(), user.getPrivilege(), path);
+                    primaryStage.close();
+                } else {
                     error.setText("User name or password incorrect");
                 }
 
@@ -93,5 +90,10 @@ public class GUI extends Application {
         });
 
         primaryStage.show();
+    }
+
+    public static String getPath()
+    {
+        return path;
     }
 }

@@ -21,10 +21,10 @@ public class UpdateWorkOrder
     private static ObservableList<WorkOrder> finalized;
 
 
-    public static void setObservableList()
+    public static void setObservableList(String path)
     {
         try {
-            ArrayList array = Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\workOrders.ser");
+            ArrayList array = Management.readList(path + "\\workOrders.ser");
             ArrayList<WorkOrder> array0 = new ArrayList();
             ArrayList<WorkOrder> array1 = new ArrayList();
             ArrayList<WorkOrder> array2 = new ArrayList<>();
@@ -60,9 +60,11 @@ public class UpdateWorkOrder
         }
     }
 
-    public static void writeToFile()
+    public static ObservableList getFinalized(){return finalized;}
+
+    public static void writeToFile(String path)
     {
-        File file = new File("C:\\CPSC300\\CPSC300\\src\\Database\\workOrders.ser");
+        File file = new File(path + "\\workOrders.ser");
         ArrayList array = new ArrayList();
         array.addAll(pending);
         array.addAll(outstanding);
@@ -189,6 +191,20 @@ public class UpdateWorkOrder
     public static void removeFinalized(WorkOrder order)
     {
         finalized.remove(order);
+    }
+
+    public static void updateWorkOrderFinalized(TableView tableView, WorkOrder order)
+    {
+        List<TableColumn> list  = tableView.getColumns();
+        TableColumn number = list.get(0);
+        TableColumn supplier = list.get(1);
+        TableColumn orderedBy = list.get(2);
+
+        number.setCellValueFactory(new PropertyValueFactory<>("number"));
+        supplier.setCellValueFactory(new PropertyValueFactory<>("supplier"));
+        orderedBy.setCellValueFactory(new PropertyValueFactory<>("orderBy"));
+
+        tableView.getItems().addAll(order.getPartsOrderArray());
     }
 
 }

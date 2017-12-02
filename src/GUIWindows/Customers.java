@@ -24,7 +24,7 @@ import javafx.stage.Stage;
  */
 public class Customers
 {
-    public static void CustomerList(String nameUser, int privledge)
+    public static void CustomerList(String nameUser, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -53,8 +53,8 @@ public class Customers
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(privledge == 1) {
-                    Customers(table, name, address, phoneNumber, email, nameUser, privledge);
+                if(privilege == 1) {
+                    Customers(table, name, address, phoneNumber, email, nameUser, privilege, path);
                 }
 
             }
@@ -72,7 +72,7 @@ public class Customers
      * admin privileges.
      */
     public static void Customers(TableView table, TableColumn name, TableColumn address, TableColumn phoneNumber,
-    TableColumn email, String nameUser, int privledge)
+    TableColumn email, String nameUser, int privledge, String path)
     {
         Stage stage = new Stage();
         Text nameText = new Text("Name:");
@@ -143,7 +143,7 @@ public class Customers
                         table.getItems().clear();
                     }
                     UpdateCustomers.updateCustomer(table, name, address, phoneNumber, email);
-                    Management.addObject("C:/CPSC300/CPSC300/src/Database/customers.ser", customer);
+                    Management.addObject(path + "\\customers.ser", customer);
                     stage.close();
                 }
             }

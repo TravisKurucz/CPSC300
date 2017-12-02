@@ -21,20 +21,25 @@ public class MainGUI
      * This is the method that creates the main window of our GUI this is where all of the users will start after
      * logging in and where all the other tasks will start from.
      */
-    public static void MainGUI(String name, int privilege)
+
+
+
+    private static TextArea errorArea = new TextArea();
+    public static void MainGUI(String name, int privilege, String path)
     {
-        UpdateInventory.setObservableList();
-        UpdateCustomers.setObservableList();
-        UpdateSuppliers.setObservableList();
-        UpdatePartOrder.setObservableList();
-        UpdateWorkOrder.setObservableList();
-        UpdateEquipment.setObservableList();
+        UpdateInventory.setObservableList(path);
+        UpdateCustomers.setObservableList(path);
+        UpdateSuppliers.setObservableList(path);
+        UpdatePartOrder.setObservableList(path);
+        UpdateWorkOrder.setObservableList(path);
+        UpdateEquipment.setObservableList(path);
+
 
         Stage primaryStage = new Stage();
 
         Text text = new Text("Error Area");
 
-        TextArea errorArea = new TextArea();
+
 
         Button partOrder = new Button("Part Order");
         Button workOrder = new Button("Work Order");
@@ -44,10 +49,9 @@ public class MainGUI
         Button suppliers = new Button("Suppliers");
         Button equipment = new Button("Equipment");
         Button user = new Button("User");
-        Button test = new Button("Test");
 
         VBox vBox = new VBox(10, inventory, suppliers, customers, equipment, user);
-        VBox vbButtons = new VBox(10, partOrder, workOrder, report, test);
+        VBox vbButtons = new VBox(10, partOrder, workOrder, report);
 
         GridPane grid = new GridPane();
 
@@ -61,11 +65,11 @@ public class MainGUI
         customers.setMaxWidth(Double.MAX_VALUE);
         suppliers.setMaxWidth(Double.MAX_VALUE);
         user.setMaxWidth(Double.MAX_VALUE);
-        test.setMaxWidth(Double.MAX_VALUE);
 
         primaryStage.setTitle("Inventory Management");
 
         errorArea.setEditable(false);
+        UpdateError.updateError(errorArea);
 
         vbButtons.setPadding(new Insets(0, 20, 10, 20));
 
@@ -81,12 +85,14 @@ public class MainGUI
 
         primaryStage.setScene(scene);
 
+
+
         //This button opens the part order window
         partOrder.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
-                PartOrderWindow.PartOrderWindow(name, privilege);
+                PartOrderWindow.PartOrderWindow(name, privilege, path);
             }
         });
 
@@ -94,7 +100,7 @@ public class MainGUI
         workOrder.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                WorkOrderWindow.WorkOrderWindow(name, privilege);
+                WorkOrderWindow.WorkOrderWindow(name, privilege, path);
             }
         });
 
@@ -110,7 +116,7 @@ public class MainGUI
         inventory.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Inventory.InventoryList(name, privilege);
+                Inventory.InventoryList(name, privilege, path);
             }
         });
 
@@ -118,7 +124,7 @@ public class MainGUI
         customers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Customers.CustomerList(name, privilege);
+                Customers.CustomerList(name, privilege, path);
             }
         });
 
@@ -126,30 +132,29 @@ public class MainGUI
         suppliers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Suppliers.SupplierList(name, privilege);
+                Suppliers.SupplierList(name, privilege, path);
             }
         });
 
         equipment.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                EquipmentWindow.EquipmentWindow(name, privilege);
+                EquipmentWindow.EquipmentWindow(name, privilege, path);
             }
         });
 
         user.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                UserWindow.userWindow(name, privilege);
+                UserWindow.userWindow(name, privilege, path);
             }
         });
 
-        test.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Test.Test();
-            }
-        });
         primaryStage.show();
+    }
+
+    public static void setErrorWindow()
+    {
+        UpdateError.updateError(errorArea);
     }
 }

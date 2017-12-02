@@ -187,4 +187,64 @@ public class Management {
 
     }
 
+    public static String createFiles()
+    {
+
+        try {
+            String path = ClassLoader.getSystemClassLoader().getResource(".").getPath();
+            File customers = new File(path+"\\customers.ser");
+            File Equipment = new File(path+"\\Equipment.ser");
+            File partOrders = new File(path+"\\partOrders.ser");
+            File parts = new File(path+"\\parts.ser");
+            File supplers = new File(path+"\\suppliers.ser");
+            File users = new File(path+"\\users.ser");
+            File workOrders = new File(path+"\\workOrders.ser");
+
+            if(!customers.exists())
+            {
+                customers.getParentFile().mkdirs();
+                customers.createNewFile();
+            }
+            if(!Equipment.exists())
+            {
+                Equipment.getParentFile().mkdirs();
+                Equipment.createNewFile();
+            }
+            if(!partOrders.exists())
+            {
+                partOrders.getParentFile().mkdirs();
+                partOrders.createNewFile();
+            }
+            if(!parts.exists())
+            {
+                parts.getParentFile().mkdirs();
+                parts.createNewFile();
+            }
+            if(!supplers.exists())
+            {
+                supplers.getParentFile().mkdirs();
+                supplers.createNewFile();
+            }
+            if(!users.exists())
+            {
+                users.getParentFile().mkdirs();
+                users.createNewFile();
+            }
+            if(!workOrders.exists())
+            {
+                workOrders.getParentFile().mkdirs();
+                workOrders.createNewFile();
+            }
+            return path;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+
+
+    }
+
+
 }

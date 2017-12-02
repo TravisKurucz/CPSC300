@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  */
 public class Inventory
 {
-    public static void InventoryList(String nameUser, int privledge)
+    public static void InventoryList(String nameUser, int privilege, String path)
     {
 
         Stage stage = new Stage();
@@ -50,8 +50,8 @@ public class Inventory
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(privledge == 1) {
-                    Inventory(table, partNumber, name, suggestedCost, numOnHand, nameUser, privledge);
+                if(privilege == 1) {
+                    Inventory(table, partNumber, name, suggestedCost, numOnHand, nameUser, privilege, path);
                 }
 
             }
@@ -68,7 +68,7 @@ public class Inventory
      */
     //TODO add edit and save functionality.
     public static void Inventory(TableView table, TableColumn partNumber, TableColumn name,
-                                 TableColumn suggestedCost, TableColumn numOnHand, String nameUser, int privledge)
+                                 TableColumn suggestedCost, TableColumn numOnHand, String nameUser, int privledge, String path)
     {
         Stage stage = new Stage();
         Text partNumberName = new Text("Part Number");
@@ -118,13 +118,15 @@ public class Inventory
                     error.setText("Please make sure all the areas are filled");
                 } else {
                     Part part = new Part(partNumberArea.getText(), descriptionArea.getText(), suggestCostArea.getText()
-                            , Integer.valueOf(onHandArea.getText()));
+                            , 0);
+                    part.setNumOnHand(Integer.valueOf(onHandArea.getText()));
                     UpdateInventory.addPart(part);
                     for (int i = 0; i < table.getItems().size(); i++) {
                         table.getItems().clear();
                     }
                     UpdateInventory.updateInventory(table, partNumber, name, suggestedCost, numOnHand);
-                    Management.addObject("C:/CPSC300/CPSC300/src/Database/parts.ser", part);
+                    MainGUI.setErrorWindow();
+                    Management.addObject(path +"/parts.ser", part);
                     stage.close();
                 }
             }

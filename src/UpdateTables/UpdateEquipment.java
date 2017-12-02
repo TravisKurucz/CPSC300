@@ -18,10 +18,10 @@ public class UpdateEquipment
 {
     private static ObservableList equipment;
 
-    public static void setObservableList()
+    public static void setObservableList(String path)
     {
         try {
-            equipment = FXCollections.observableArrayList(Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\Equipment.ser"));
+            equipment = FXCollections.observableArrayList(Management.readList(path + "\\Equipment.ser"));
         }
         catch (Exception io)
         {

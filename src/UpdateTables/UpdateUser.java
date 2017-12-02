@@ -18,10 +18,10 @@ public class UpdateUser
 {
     private static ObservableList users;
 
-    public static void setObservableList()
+    public static void setObservableList(String path)
     {
         try {
-            users = FXCollections.observableArrayList(Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\users.ser"));
+            users = FXCollections.observableArrayList(Management.readList(path + "\\users.ser"));
         }
         catch (Exception io)
         {
@@ -41,6 +41,11 @@ public class UpdateUser
         users.add(user);
     }
 
+
+    public static ObservableList getList()
+    {
+        return users;
+    }
     public static boolean contains(String userName)
     {
         for(int i = 0; i < users.size(); i++)

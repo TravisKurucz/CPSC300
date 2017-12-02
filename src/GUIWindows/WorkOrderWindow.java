@@ -27,7 +27,7 @@ import java.util.Random;
  * Created by colton on 2017-11-26.
  */
 public class WorkOrderWindow {
-    public static void WorkOrderWindow(String name, int privilege) {
+    public static void WorkOrderWindow(String name, int privilege, String path) {
         Stage stage = new Stage();
 
         BorderPane borderPending = new BorderPane();
@@ -96,7 +96,7 @@ public class WorkOrderWindow {
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 WorkOrder selected = tableViewPending.getItems().get(row);
-                CreateNewWorkOrder(tableViewPending, selected, name, privilege);
+                CreateNewWorkOrder(tableViewPending, selected, name, privilege, path);
             }
         });
 
@@ -106,7 +106,7 @@ public class WorkOrderWindow {
             public void handle(ActionEvent event) {
                 WorkOrder workOrder = new WorkOrder(null, null, null);
                 workOrder.setStatus('P');
-                CreateNewWorkOrder(tableViewPending, workOrder, name, privilege);
+                CreateNewWorkOrder(tableViewPending, workOrder, name, privilege, path);
             }
         });
 
@@ -116,7 +116,7 @@ public class WorkOrderWindow {
                 TablePosition pos = tableViewOutstanding.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 WorkOrder selected = tableViewOutstanding.getItems().get(row);
-                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected, name, privilege);
+                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected, name, privilege, path);
             }
         });
 
@@ -136,23 +136,155 @@ public class WorkOrderWindow {
                 UpdateWorkOrder.addOutstanding(selected);
                 UpdateWorkOrder.updatePending(tableViewPending);
                 UpdateWorkOrder.updateOutstanding(tableViewOutstanding);
-                UpdateWorkOrder.writeToFile();
+                UpdateWorkOrder.writeToFile(path);
             }
         });
 
         stage.show();
     }
 
-    private static void finalizeSelected(TableView tableOutstanding, TableView tableFinalize, WorkOrder order, String name, int privilege)
+    private static void finalizeSelected(TableView tableOutstanding, TableView tableFinalize, WorkOrder order,
+                                         String nameUser, int privilege, String path)
     {
         Stage stage = new Stage();
 
-        TableView table = new TableView();
+        TableView<PartOrder> table = new TableView<>();
+        TableColumn number = new TableColumn("Number: ");
+        TableColumn supplier = new TableColumn("Supplier:");
+        TableColumn orderedBy = new TableColumn("Ordered By: ");
+
+        Button receive = new Button("Receive");
+        Button save = new Button("Save");
+
+        HBox hBox = new HBox(10, receive, save);
+
+        hBox.setAlignment(Pos.BOTTOM_CENTER);
+        hBox.setPadding(new Insets(10));
+
+        table.getColumns().addAll(number, supplier, orderedBy);
+
+        UpdateWorkOrder.updateWorkOrderFinalized(table, order);
+
+        BorderPane borderPane = new BorderPane(table);
+        borderPane.setBottom(hBox);
+
+        Scene scene = new Scene(borderPane);
 
 
+        receive.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition pos = table.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+                PartOrder selected = table.getItems().get(row);
+
+                FinalizeSelectedPartOrder(selected, nameUser, privilege, path);
+            }
+        });
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                order.setStatus('F');
+                UpdateWorkOrder.removeOutstanding(order);
+                UpdateWorkOrder.addFinalize(order);
+
+                UpdateWorkOrder.writeToFile(path);
+                UpdateWorkOrder.updateOutstanding(tableOutstanding);
+                UpdateWorkOrder.updateFinalized(tableFinalize);
+
+                stage.close();
 
 
+            }
+        });
+        stage.setScene(scene);
+        stage.setTitle("Finalize Work Order");
+        stage.show();
+    }
 
+    private static void FinalizeSelectedPartOrder(PartOrder order, String nameUser, int privilege, String path)
+    {
+        Stage stage = new Stage();
+
+        Text poNumber = new Text("PO #:");
+        Text supplier = new Text("Supplier:");
+
+        TextArea poNumberArea = new TextArea();
+        TextArea supplierArea = new TextArea();
+
+        Button save = new Button("Save");
+        Button receive = new Button("Receive");
+
+        HBox hBox = new HBox(10, poNumber, poNumberArea, supplier, supplierArea);
+        HBox hBox1 = new HBox(10, receive, save);
+
+        BorderPane borderPane = new BorderPane();
+
+        TableView<Part> table = new TableView<>();
+        TableColumn partNumber = new TableColumn("Part Number");
+        TableColumn name = new TableColumn("Name");
+        TableColumn amountOrdered = new TableColumn("Amount Ordered");
+        TableColumn received = new TableColumn("Received");
+        TableColumn actualCost = new TableColumn("Actual Cost");
+        TableColumn invoiceNumber = new TableColumn("Invoice Number");
+        TableColumn date = new TableColumn("Date");
+
+        table.getColumns().addAll(partNumber, name, amountOrdered, received, actualCost, invoiceNumber, date);
+
+        Scene scene= new Scene(borderPane);
+
+        borderPane.setCenter(table);
+        borderPane.setBottom(hBox1);
+        borderPane.setTop(hBox);
+        borderPane.setPadding(new Insets(10));
+
+        hBox.setPadding(new Insets(10));
+        hBox1.setPadding(new Insets(10));
+
+        hBox1.setAlignment(Pos.BOTTOM_CENTER);
+
+        poNumberArea.setWrapText(true);
+        poNumberArea.setMaxHeight(12);
+        poNumberArea.setMaxWidth(100);
+        poNumberArea.setText(String.valueOf(order.getNumber()));
+
+        supplierArea.setWrapText(true);
+        supplierArea.setMaxHeight(12);
+        supplierArea.setMaxWidth(100);
+        supplierArea.setText(order.getSupplier());
+
+        UpdatePartOrder.updateFinalizedPartOrder(table, order);
+
+        receive.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TablePosition pos = table.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+
+                Part selected = table.getItems().get(row);
+                PartOrderWindow.receiveParts(table, selected, order, nameUser, privilege, path);
+            }
+        });
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                UpdatePartOrder.removeOrderOutstanding(order);
+                UpdatePartOrder.addOrderFinalized(order);
+                for(Part part : order.getPartsOrdered())
+                {
+                    UpdateInventory.getPart(part.getPartNumber()).
+                            setNumOnHand(part.getNumOnHand()+ Integer.valueOf(part.getAmountReceived()));
+                    UpdateInventory.writeFile(path);
+                }
+                MainGUI.setErrorWindow();
+                order.setStatus('F');
+                UpdatePartOrder.writeToFile(path);
+                stage.close();
+            }
+        });
+
+        stage.setScene(scene);
         stage.setTitle("Finalize");
         stage.show();
     }
@@ -160,7 +292,7 @@ public class WorkOrderWindow {
     /**
      * This is the window that deals with the creation of work orders.
      */
-    public static void CreateNewWorkOrder(TableView tableView, WorkOrder order, String name, int privilege)
+    public static void CreateNewWorkOrder(TableView tableView, WorkOrder order, String name, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -183,13 +315,12 @@ public class WorkOrderWindow {
 
         Button save = new Button("Save");
         Button generate = new Button("Generate PO");
-        Button receive = new Button("Receive");
 
         HBox hBox = new HBox(10, unitName, unitNameArea);
         HBox hBox1 = new HBox(10, unitNumber, unitNumberArea);
         HBox hBox2 = new HBox(10, costCode, costCodeArea);
         HBox hBox3 = new HBox(50, hBox, hBox1);
-        HBox buttons = new HBox(10, save, generate, receive);
+        HBox buttons = new HBox(10, save, generate);
 
         VBox vBox = new VBox(10, hBox3, hBox2);
 
@@ -247,24 +378,27 @@ public class WorkOrderWindow {
                 {
                     if(UpdatePartOrder.getPending().contains(partOrder))
                     {
-                        UpdatePartOrder.writeToFile();
+                        UpdatePartOrder.writeToFile(path);
                     }
                     else
                     {
                         UpdatePartOrder.addOrderPending(partOrder);
-                        Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser", partOrder);
+                        Management.addObject(path + "\\partOrders.ser", partOrder);
                     }
                 }
 
                 if(tableView.getItems().contains(order))
                 {
-                    UpdateWorkOrder.writeToFile();
+                    UpdateWorkOrder.writeToFile(path);
+                    for ( int i = 0; i<tableView.getItems().size(); i++) {
+                        tableView.getItems().clear();
+                    }
                     UpdateWorkOrder.updatePending(tableView);
                     stage.close();
                 }
                 else
                 {
-                    Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\workOrders.ser", order);
+                    Management.addObject(path + "\\workOrders.ser", order);
                     UpdateWorkOrder.addPending(order);
                     UpdateWorkOrder.updatePending(tableView);
                     stage.close();
@@ -346,7 +480,7 @@ public class WorkOrderWindow {
                 order.setNumber(Integer.valueOf(poArea.getText()));
                 order.setSupplier(supplierArea.getText());
                 order.setCost("Cost");
-                order.setOrderBy("Name");
+                order.setOrderBy(name);
                 workOrder.addPartOrders(order);
                 if (table.getItems().contains(order)) {
                     UpdateWorkOrder.updateWorkOrder(table, workOrder);

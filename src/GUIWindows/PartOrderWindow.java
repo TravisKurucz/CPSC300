@@ -22,11 +22,11 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 /**
- * Created by colto on 2017-11-26.
+ * Created by colton on 2017-11-26.
  */
 public class PartOrderWindow
 {
-    public static void PartOrderWindow(String name, int privilege)
+    public static void PartOrderWindow(String name, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -85,13 +85,9 @@ public class PartOrderWindow
         outstanding.setContent(borderOutstanding);
         finalized.setContent(tableViewFinalized);
 
-
-
         stage.setTitle("Part Order");
         stage.setScene(scene);
         stage.setMaximized(true);
-
-
 
         editSelected.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -99,7 +95,7 @@ public class PartOrderWindow
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 PartOrder selected = tableViewPending.getItems().get(row);
-                createNewPartOrder(tableViewPending, selected, name, privilege);
+                createNewPartOrder(tableViewPending, selected, name, privilege, path);
             }
         });
 
@@ -110,7 +106,7 @@ public class PartOrderWindow
                 PartOrder order = new PartOrder(null, 0, null, null,
                         null);
                 order.setStatus('P');
-                createNewPartOrder(tableViewPending, order, name, privilege);
+                createNewPartOrder(tableViewPending, order, name, privilege, path);
             }
         });
 
@@ -125,7 +121,7 @@ public class PartOrderWindow
                 UpdatePartOrder.addOrderOutstanding(selected);
                 UpdatePartOrder.updatePending(tableViewPending);
                 UpdatePartOrder.updateOutstanding(tableViewOutstanding);
-                UpdatePartOrder.writeToFile();
+                UpdatePartOrder.writeToFile(path);
             }
         });
 
@@ -135,7 +131,7 @@ public class PartOrderWindow
                 TablePosition pos = tableViewOutstanding.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 PartOrder selected = tableViewOutstanding.getItems().get(row);
-                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected, name, privilege);
+                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected, name, privilege, path);
             }
         });
 
@@ -146,7 +142,7 @@ public class PartOrderWindow
      * The window that is used to create a new part order.
      * @param table The table from the previous window so it can be updated when this window is closed.
      */
-    private static void createNewPartOrder(TableView table, PartOrder order, String name, int privilege)
+    private static void createNewPartOrder(TableView table, PartOrder order, String name, int privilege, String path)
     {
 
         ObservableList<String> options = FXCollections.observableArrayList("Customer", "Resupply", "Store Use");
@@ -242,7 +238,7 @@ public class PartOrderWindow
                 int row = position.getRow();
                 Part part = edit.getItems().get(row);
                 order.removePart(part);
-                UpdatePartOrder.writeToFile();
+                UpdatePartOrder.writeToFile(path);
                 for ( int i = 0; i<edit.getItems().size(); i++) {
                     edit.getItems().clear();
                 }
@@ -257,18 +253,18 @@ public class PartOrderWindow
                 order.setNumber(Integer.valueOf(poArea.getText()));
                 order.setSupplier(supplierArea.getText());
                 order.setCost("Cost");
-                order.setOrderBy("Name");
+                order.setOrderBy(name);
                 order.setOrderType(type.getSelectionModel().getSelectedItem());
 
 
                 if(table.getItems().contains(order))
                 {
-                    UpdatePartOrder.writeToFile();
+                    UpdatePartOrder.writeToFile(path);
                     UpdatePartOrder.updatePending(table);
                     stage.close();
                 }
                 else {
-                    Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser",  order);
+                    Management.addObject(path +"\\partOrders.ser",  order);
                     UpdatePartOrder.addOrderPending(order);
                     UpdatePartOrder.updatePending(table);
                     stage.close();
@@ -393,7 +389,8 @@ public class PartOrderWindow
     }
 
     //TODO make the received column editable.
-    private static void finalizeSelected(TableView outstandingTable, TableView finalizedTable, PartOrder order, String nameUser, int privilege)
+    private static void finalizeSelected(TableView outstandingTable, TableView finalizedTable, PartOrder order,
+                                         String nameUser, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -453,7 +450,7 @@ public class PartOrderWindow
                 int row = pos.getRow();
 
                 Part selected = table.getItems().get(row);
-                receiveParts(table, selected, order, nameUser, privilege);
+                receiveParts(table, selected, order, nameUser, privilege, path);
             }
         });
 
@@ -464,8 +461,15 @@ public class PartOrderWindow
                 UpdatePartOrder.addOrderFinalized(order);
                 UpdatePartOrder.updateOutstanding(outstandingTable);
                 UpdatePartOrder.updateFinalized(finalizedTable);
+                for(Part part : order.getPartsOrdered())
+                {
+                    UpdateInventory.getPart(part.getPartNumber()).
+                            setNumOnHand(part.getNumOnHand()+ Integer.valueOf(part.getAmountReceived()));
+                    UpdateInventory.writeFile(path);
+                }
+                MainGUI.setErrorWindow();
                 order.setStatus('F');
-                UpdatePartOrder.writeToFile();
+                UpdatePartOrder.writeToFile(path);
                 stage.close();
             }
         });
@@ -475,7 +479,7 @@ public class PartOrderWindow
         stage.show();
     }
 
-    private static void receiveParts(TableView table, Part part, PartOrder partOrder, String name, int privilege)
+    public static void receiveParts(TableView table, Part part, PartOrder partOrder, String name, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -542,7 +546,7 @@ public class PartOrderWindow
                     for ( int i = 0; i<table.getItems().size(); i++) {
                         table.getItems().clear();
                     }
-                    UpdatePartOrder.writeToFile();
+                    UpdatePartOrder.writeToFile(path);
                     UpdatePartOrder.updateFinalizedPartOrder(table, partOrder);
                     stage.close();
 

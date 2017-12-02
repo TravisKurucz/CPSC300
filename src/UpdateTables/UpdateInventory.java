@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -19,15 +20,28 @@ public class UpdateInventory
 {
     private static ObservableList inventory;
 
-    public static void setObservableList()
+    public static void setObservableList(String path)
     {
         try {
-            inventory = FXCollections.observableArrayList(Management.readList("C:/CPSC300/CPSC300/src/Database/parts.ser"));
+            inventory = FXCollections.observableArrayList(Management.readList(path + "/parts.ser"));
         }
         catch (Exception io)
         {
             ArrayList array = new ArrayList();
             inventory = FXCollections.observableArrayList(array);
+        }
+    }
+    public static void writeFile(String path)
+    {
+        File file = new File(path + "\\parts.ser");
+        ArrayList array = new ArrayList();
+        array.addAll(inventory);
+        try{
+            Management.writeList(file, array);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -72,4 +86,10 @@ public class UpdateInventory
         }
         return null;
     }
+
+    public static ObservableList getArray()
+    {
+        return inventory;
+    }
+
 }

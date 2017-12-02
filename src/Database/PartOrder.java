@@ -92,4 +92,10 @@ public class PartOrder implements Serializable
     public void setStatus(char status) {
         this.status = status;
     }
+
+    public String toString()
+    {
+        return "Order Type: " + orderType +"\nOrdered By: " +orderBy+ "\n Order Number: "+ number+ "\n Supplier: "+
+                supplier+ "\n Cost: "+cost+"\n";
+    }
 }

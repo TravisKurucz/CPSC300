@@ -78,4 +78,9 @@ public class WorkOrder implements java.io.Serializable
     public void setStatus(char status) {
         this.status = status;
     }
+
+    public String toString()
+    {
+        return "Unit Name: " + unitName+"\n Unit Number: "+ unitNumber+" \n Cost Code: " + costCode;
+    }
 }

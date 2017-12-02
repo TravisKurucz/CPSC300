@@ -34,10 +34,10 @@ public class UpdatePartOrder
     private static ObservableList<PartOrder> finalized;
 
 
-    public static void setObservableList()
+    public static void setObservableList(String path)
     {
         try {
-            ArrayList array = Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser");
+            ArrayList array = Management.readList(path + "\\partOrders.ser");
             ArrayList<PartOrder> array0 = new ArrayList();
             ArrayList<PartOrder> array1 = new ArrayList();
             ArrayList<PartOrder> array2 = new ArrayList<>();
@@ -73,9 +73,9 @@ public class UpdatePartOrder
         }
     }
 
-    public static void writeToFile()
+    public static void writeToFile(String path)
     {
-        File file = new File("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser");
+        File file = new File(path + "\\partOrders.ser");
         ArrayList array = new ArrayList();
         array.addAll(pending);
         array.addAll(outstanding);
@@ -116,6 +116,7 @@ public class UpdatePartOrder
     {
         return pending;
     }
+    public static ObservableList<PartOrder> getFinalized(){return finalized;}
     /**
      * This method updates the tabs with all the pending part order information
      * @param table The table that all the columns are on.

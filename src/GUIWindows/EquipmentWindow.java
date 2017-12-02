@@ -25,7 +25,7 @@ import javafx.stage.Stage;
  */
 public class EquipmentWindow
 {
-    public static void EquipmentWindow(String name, int privledge)
+    public static void EquipmentWindow(String name, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -49,8 +49,8 @@ public class EquipmentWindow
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(privledge == 1) {
-                    newEquipment(table, unitNumber, nameAndYear, odometer, name, privledge);
+                if(privilege == 1) {
+                    newEquipment(table, unitNumber, nameAndYear, odometer, name, privilege, path);
                 }
             }
         });
@@ -59,7 +59,8 @@ public class EquipmentWindow
         stage.setTitle("Equipment");
         stage.show();
     }
-    private static void newEquipment(TableView table, TableColumn unitNumber, TableColumn nameAndYear, TableColumn odometer, String name, int privledge)
+    private static void newEquipment(TableView table, TableColumn unitNumber, TableColumn nameAndYear,
+                                     TableColumn odometer, String name, int privledge, String path)
     {
         Stage stage = new Stage();
         Text unitNumberText = new Text("Unit Number:");
@@ -108,7 +109,7 @@ public class EquipmentWindow
                 }
                 UpdateEquipment.updateEquipment(table, unitNumber, nameAndYear, odometer);
 
-                Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\Equipment.ser", equipment);
+                Management.addObject(path + "\\Equipment.ser", equipment);
                 stage.close();
             }
         });

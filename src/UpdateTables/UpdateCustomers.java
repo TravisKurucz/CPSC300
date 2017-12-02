@@ -17,10 +17,10 @@ public class UpdateCustomers
 {
     private static ObservableList customers;
 
-    public static void setObservableList()
+    public static void setObservableList(String path)
     {
         try {
-            customers = FXCollections.observableArrayList(Management.readList("C:/CPSC300/CPSC300/src/Database/customers.ser"));
+            customers = FXCollections.observableArrayList(Management.readList(path + "/customers.ser"));
         }
         catch (Exception io)
         {

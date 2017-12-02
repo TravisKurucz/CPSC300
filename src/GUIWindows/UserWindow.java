@@ -23,7 +23,7 @@ import javafx.stage.Stage;
  */
 public class UserWindow
 {
-    public static void userWindow(String nameUser, int privilege)
+    public static void userWindow(String nameUser, int privilege, String path)
     {
         Stage stage = new Stage();
 
@@ -50,7 +50,7 @@ public class UserWindow
             @Override
             public void handle(ActionEvent event) {
                 if(privilege == 1) {
-                    User(table, name);
+                    User(table, name, path);
                 }
 
             }
@@ -63,7 +63,7 @@ public class UserWindow
         stage.show();
     }
 
-    private static void User(TableView tableView, TableColumn name)
+    private static void User(TableView tableView, TableColumn name, String path)
     {
         Stage stage = new Stage();
         ObservableList<Integer> options = FXCollections.observableArrayList(0, 1);
@@ -118,7 +118,7 @@ public class UserWindow
                     user.setPrivilege(privilege.getSelectionModel().getSelectedItem());
                     user.setUserName(userNameArea.getText());
 
-                    Management.addObject("C:\\CPSC300\\CPSC300\\src\\Database\\users.ser", user);
+                    Management.addObject(path + "\\users.ser", user);
                     UpdateUser.addUser(user);
                     UpdateUser.updateUser(tableView, name);
                     stage.close();

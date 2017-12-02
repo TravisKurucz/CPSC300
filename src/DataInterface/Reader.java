@@ -27,21 +27,18 @@ public class Reader {
      * @param user
      * @return
      */
-    public static boolean checkPassword(User user) {
+    public static boolean checkPassword(User user, String path) {
         try {
-            ArrayList list = Management.readList("CPSC300/src/Database/users.ser");
+            ArrayList list = Management.readList(path +"\\users.ser");
             ArrayList<User> userList = Casting.castToUsers(list);
             for (int i = 0; i < userList.size(); i++) {
-                if (user.getUserName() == userList.get(i).getUserName()) {
-                    if (user.getPassword() == userList.get(i).getPassword()) {
+                if (user.getUserName().equals(userList.get(i).getUserName())) {
+                    if (user.getPassword().equals(userList.get(i).getPassword())) {
                         return true;
                     }
-                    JOptionPane.showMessageDialog(null, "Error: Password does not match database. Please contact your system administrator" +
-                            " for assistance.");
                     return false;
                 }
             }//end for
-            JOptionPane.showMessageDialog(null, "Error: Username not found. Contact your system administrator for assistance.");
         }
         catch (Exception e)
         {

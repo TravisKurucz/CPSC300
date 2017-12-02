@@ -8,7 +8,7 @@ public class Part implements java.io.Serializable {
     private String name;
     private String suggestedCost;
     private int numberOrdered;
-    private static int numOnHand;
+    private int numOnHand;
     private String type;
     private String date;
     private String invoiceNumber;
@@ -62,12 +62,12 @@ public class Part implements java.io.Serializable {
         this.numberOrdered = numberOrdered;
     }
 
-    public static int getNumOnHand() {
+    public int getNumOnHand() {
         return numOnHand;
     }
 
-    public static void setNumOnHand(int numOnHand) {
-        Part.numOnHand = numOnHand;
+    public void setNumOnHand(int numOnHand) {
+        this.numOnHand = numOnHand;
     }
 
     public String getType() {
