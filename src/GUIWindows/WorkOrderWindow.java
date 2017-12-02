@@ -27,7 +27,7 @@ import java.util.Random;
  * Created by colton on 2017-11-26.
  */
 public class WorkOrderWindow {
-    public static void WorkOrderWindow() {
+    public static void WorkOrderWindow(String name, int privilege) {
         Stage stage = new Stage();
 
         BorderPane borderPending = new BorderPane();
@@ -96,7 +96,7 @@ public class WorkOrderWindow {
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 WorkOrder selected = tableViewPending.getItems().get(row);
-                CreateNewWorkOrder(tableViewPending, selected);
+                CreateNewWorkOrder(tableViewPending, selected, name, privilege);
             }
         });
 
@@ -106,7 +106,7 @@ public class WorkOrderWindow {
             public void handle(ActionEvent event) {
                 WorkOrder workOrder = new WorkOrder(null, null, null);
                 workOrder.setStatus('P');
-                CreateNewWorkOrder(tableViewPending, workOrder);
+                CreateNewWorkOrder(tableViewPending, workOrder, name, privilege);
             }
         });
 
@@ -116,7 +116,7 @@ public class WorkOrderWindow {
                 TablePosition pos = tableViewOutstanding.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 WorkOrder selected = tableViewOutstanding.getItems().get(row);
-                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected);
+                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected, name, privilege);
             }
         });
 
@@ -143,7 +143,7 @@ public class WorkOrderWindow {
         stage.show();
     }
 
-    private static void finalizeSelected(TableView tableOutstanding, TableView tableFinalize, WorkOrder order)
+    private static void finalizeSelected(TableView tableOutstanding, TableView tableFinalize, WorkOrder order, String name, int privilege)
     {
         Stage stage = new Stage();
 
@@ -160,7 +160,7 @@ public class WorkOrderWindow {
     /**
      * This is the window that deals with the creation of work orders.
      */
-    public static void CreateNewWorkOrder(TableView tableView, WorkOrder order)
+    public static void CreateNewWorkOrder(TableView tableView, WorkOrder order, String name, int privilege)
     {
         Stage stage = new Stage();
 
@@ -233,7 +233,7 @@ public class WorkOrderWindow {
         generate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                WorkOrderPO(newWorkOrderTable, order);
+                WorkOrderPO(newWorkOrderTable, order, name, privilege);
             }
         });
 
@@ -275,7 +275,7 @@ public class WorkOrderWindow {
         stage.show();
     }
 
-    private static void WorkOrderPO(TableView table, WorkOrder workOrder)
+    private static void WorkOrderPO(TableView table, WorkOrder workOrder, String name, int privilege)
     {
         Stage stage = new Stage();
         PartOrder order = new Database.PartOrder(null, 0, null, "Work Order", null);
@@ -320,7 +320,7 @@ public class WorkOrderWindow {
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                addPartToOrder(edit, number, description, ordered, order, workOrder);
+                addPartToOrder(edit, number, description, ordered, order, workOrder, name, privilege);
             }
         });
 
@@ -413,7 +413,7 @@ public class WorkOrderWindow {
      * @param order           The part order that has been created.
      */
     private static void addPartToOrder(TableView table, TableColumn partNumber, TableColumn partDescription,
-                                       TableColumn numberOrdered, PartOrder order, WorkOrder workOrder)
+                                       TableColumn numberOrdered, PartOrder order, WorkOrder workOrder, String name, int privilege)
     {
         Stage stage = new Stage();
         Text number = new Text("Number: ");

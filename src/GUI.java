@@ -1,3 +1,5 @@
+import Database.User;
+import UpdateTables.UpdateUser;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,6 +21,8 @@ public class GUI extends Application {
      * @param args The command line args
      */
     public static void main(String[] args) {
+
+        UpdateUser.setObservableList();
         launch(args);
     }
 
@@ -32,6 +36,7 @@ public class GUI extends Application {
     {
         Text loginWord = new Text("User Name:");
         Text passWord = new Text("Password:");
+        Text error = new Text();
 
         TextArea loginArea = new TextArea();
         TextArea pass = new TextArea();
@@ -58,15 +63,32 @@ public class GUI extends Application {
         grid.add(loginArea, 0,1,2,1);
         grid.add(passWord,0,2,2,1);
         grid.add(pass, 0,3,2,1);
-        grid.add(login, 0,4,2,1);
+        grid.add(login, 0,5,2,1);
+        grid.add(error, 0,4,2,1);
 
         primaryStage.setScene(scene);
 
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                GUIWindows.MainGUI.MainGUI();
-                primaryStage.close();
+                if(UpdateUser.contains(loginArea.getText()))
+                {
+                    User user = UpdateUser.getUser(loginArea.getText());
+                    if(user.getPassword().equals(pass.getText()))
+                    {
+                        GUIWindows.MainGUI.MainGUI(user.getName(), user.getPrivilege());
+                        primaryStage.close();
+                    }
+                    else
+                    {
+                        error.setText("User name or password incorrect");
+                    }
+                }
+                else
+                {
+                    error.setText("User name or password incorrect");
+                }
+
             }
         });
 

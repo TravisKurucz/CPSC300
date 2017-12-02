@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  */
 public class Inventory
 {
-    public static void InventoryList()
+    public static void InventoryList(String nameUser, int privledge)
     {
 
         Stage stage = new Stage();
@@ -50,7 +50,9 @@ public class Inventory
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Inventory(table, partNumber, name, suggestedCost, numOnHand);
+                if(privledge == 1) {
+                    Inventory(table, partNumber, name, suggestedCost, numOnHand, nameUser, privledge);
+                }
 
             }
         });
@@ -66,7 +68,7 @@ public class Inventory
      */
     //TODO add edit and save functionality.
     public static void Inventory(TableView table, TableColumn partNumber, TableColumn name,
-                                 TableColumn suggestedCost, TableColumn numOnHand)
+                                 TableColumn suggestedCost, TableColumn numOnHand, String nameUser, int privledge)
     {
         Stage stage = new Stage();
         Text partNumberName = new Text("Part Number");

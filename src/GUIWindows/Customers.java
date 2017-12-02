@@ -24,7 +24,7 @@ import javafx.stage.Stage;
  */
 public class Customers
 {
-    public static void CustomerList()
+    public static void CustomerList(String nameUser, int privledge)
     {
         Stage stage = new Stage();
 
@@ -53,7 +53,9 @@ public class Customers
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Customers(table, name, address, phoneNumber, email);
+                if(privledge == 1) {
+                    Customers(table, name, address, phoneNumber, email, nameUser, privledge);
+                }
 
             }
         });
@@ -70,7 +72,7 @@ public class Customers
      * admin privileges.
      */
     public static void Customers(TableView table, TableColumn name, TableColumn address, TableColumn phoneNumber,
-    TableColumn email)
+    TableColumn email, String nameUser, int privledge)
     {
         Stage stage = new Stage();
         Text nameText = new Text("Name:");

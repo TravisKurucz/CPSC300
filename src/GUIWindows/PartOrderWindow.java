@@ -26,7 +26,7 @@ import java.util.Random;
  */
 public class PartOrderWindow
 {
-    public static void PartOrderWindow()
+    public static void PartOrderWindow(String name, int privilege)
     {
         Stage stage = new Stage();
 
@@ -65,9 +65,9 @@ public class PartOrderWindow
         outstanding.setClosable(false);
         finalized.setClosable(false);
 
-        setTablesPartOrder(tableViewPending);
-        setTablesPartOrder(tableViewOutstanding);
-        setTablesPartOrder(tableViewFinalized);
+        setTablesPartOrder(tableViewPending, name, privilege);
+        setTablesPartOrder(tableViewOutstanding, name, privilege);
+        setTablesPartOrder(tableViewFinalized, name, privilege);
 
         UpdatePartOrder.updatePending(tableViewPending);
         UpdatePartOrder.updateOutstanding(tableViewOutstanding);
@@ -99,7 +99,7 @@ public class PartOrderWindow
                 TablePosition pos = tableViewPending.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 PartOrder selected = tableViewPending.getItems().get(row);
-                createNewPartOrder(tableViewPending, selected);
+                createNewPartOrder(tableViewPending, selected, name, privilege);
             }
         });
 
@@ -110,7 +110,7 @@ public class PartOrderWindow
                 PartOrder order = new PartOrder(null, 0, null, null,
                         null);
                 order.setStatus('P');
-                createNewPartOrder(tableViewPending, order);
+                createNewPartOrder(tableViewPending, order, name, privilege);
             }
         });
 
@@ -135,7 +135,7 @@ public class PartOrderWindow
                 TablePosition pos = tableViewOutstanding.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
                 PartOrder selected = tableViewOutstanding.getItems().get(row);
-                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected);
+                finalizeSelected(tableViewOutstanding, tableViewFinalized, selected, name, privilege);
             }
         });
 
@@ -146,7 +146,7 @@ public class PartOrderWindow
      * The window that is used to create a new part order.
      * @param table The table from the previous window so it can be updated when this window is closed.
      */
-    private static void createNewPartOrder(TableView table, PartOrder order)
+    private static void createNewPartOrder(TableView table, PartOrder order, String name, int privilege)
     {
 
         ObservableList<String> options = FXCollections.observableArrayList("Customer", "Resupply", "Store Use");
@@ -230,7 +230,7 @@ public class PartOrderWindow
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                addPartToOrder(edit, number, description, ordered, order);
+                addPartToOrder(edit, number, description, ordered, order, name, privilege);
             }
         });
 
@@ -285,7 +285,7 @@ public class PartOrderWindow
         stage.show();
     }
 
-    private static void setTablesPartOrder(TableView table)
+    private static void setTablesPartOrder(TableView table, String name, int privilege)
     {
         TableColumn number = new TableColumn("Number");
         TableColumn supplier = new TableColumn("Supplier");
@@ -306,7 +306,7 @@ public class PartOrderWindow
      * @param order The part order that has been created.
      */
     public static void addPartToOrder(TableView table, TableColumn partNumber, TableColumn partDescription,
-                                      TableColumn numberOrdered, Database.PartOrder order)
+                                      TableColumn numberOrdered, Database.PartOrder order, String name, int privilege)
     {
         Stage stage = new Stage();
         Text number = new Text("Number: ");
@@ -393,7 +393,7 @@ public class PartOrderWindow
     }
 
     //TODO make the received column editable.
-    private static void finalizeSelected(TableView outstandingTable, TableView finalizedTable, PartOrder order)
+    private static void finalizeSelected(TableView outstandingTable, TableView finalizedTable, PartOrder order, String nameUser, int privilege)
     {
         Stage stage = new Stage();
 
@@ -453,7 +453,7 @@ public class PartOrderWindow
                 int row = pos.getRow();
 
                 Part selected = table.getItems().get(row);
-                receiveParts(table, selected, order);
+                receiveParts(table, selected, order, nameUser, privilege);
             }
         });
 
@@ -475,7 +475,7 @@ public class PartOrderWindow
         stage.show();
     }
 
-    private static void receiveParts(TableView table, Part part, PartOrder partOrder)
+    private static void receiveParts(TableView table, Part part, PartOrder partOrder, String name, int privilege)
     {
         Stage stage = new Stage();
 

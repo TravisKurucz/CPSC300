@@ -26,7 +26,7 @@ public class Suppliers
 {
 
 
-    public static void SupplierList()
+    public static void SupplierList(String nameUser, int privilege)
     {
         Stage stage = new Stage();
 
@@ -55,7 +55,7 @@ public class Suppliers
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Suppliers(table, name, address, phoneNumber, email);
+                Suppliers(table, name, address, phoneNumber, email, nameUser, privilege);
 
             }
         });
@@ -71,7 +71,7 @@ public class Suppliers
      * privileges.
      */
     public static void Suppliers(TableView table, TableColumn name, TableColumn address, TableColumn phoneNumber,
-                                 TableColumn email)
+                                 TableColumn email, String nameUser, int privilege)
     {
         Stage stage = new Stage();
         Text supplierCode = new Text("Supplier Code:");

@@ -25,7 +25,7 @@ import javafx.stage.Stage;
  */
 public class EquipmentWindow
 {
-    public static void EquipmentWindow()
+    public static void EquipmentWindow(String name, int privledge)
     {
         Stage stage = new Stage();
 
@@ -49,7 +49,9 @@ public class EquipmentWindow
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                newEquipment(table, unitNumber, nameAndYear, odometer);
+                if(privledge == 1) {
+                    newEquipment(table, unitNumber, nameAndYear, odometer, name, privledge);
+                }
             }
         });
 
@@ -57,7 +59,7 @@ public class EquipmentWindow
         stage.setTitle("Equipment");
         stage.show();
     }
-    private static void newEquipment(TableView table, TableColumn unitNumber, TableColumn nameAndYear, TableColumn odometer)
+    private static void newEquipment(TableView table, TableColumn unitNumber, TableColumn nameAndYear, TableColumn odometer, String name, int privledge)
     {
         Stage stage = new Stage();
         Text unitNumberText = new Text("Unit Number:");
