@@ -7,6 +7,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,10 +16,65 @@ import java.util.List;
  */
 public class UpdateWorkOrder
 {
-    private static ObservableList<WorkOrder> pending = FXCollections.observableArrayList(new Database.WorkOrder("123", "Name", "12"));
-    private static ObservableList<WorkOrder> outstanding = FXCollections.observableArrayList(new Database.WorkOrder("123", "Name", "12"));
-    private static ObservableList<WorkOrder> finalized = FXCollections.observableArrayList(new Database.WorkOrder("123", "Name", "12"));
+    private static ObservableList<WorkOrder> pending;
+    private static ObservableList<WorkOrder> outstanding;
+    private static ObservableList<WorkOrder> finalized;
 
+
+    public static void setObservableList()
+    {
+        try {
+            ArrayList array = Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\workOrders.ser");
+            ArrayList<WorkOrder> array0 = new ArrayList();
+            ArrayList<WorkOrder> array1 = new ArrayList();
+            ArrayList<WorkOrder> array2 = new ArrayList<>();
+            pending = FXCollections.observableArrayList(array0);
+            outstanding = FXCollections.observableArrayList(array1);
+            finalized = FXCollections.observableArrayList(array2);
+            for(int i = 0; i<array.size(); i++)
+            {
+                Object obj = array.get(i);
+                WorkOrder order = (WorkOrder) obj;
+                switch (order.getStatus())
+                {
+                    case ('P'):
+                        pending.add(order);
+                        break;
+                    case  ('O'):
+                        outstanding.add(order);
+                        break;
+                    case ('F'):
+                        finalized.add(order);
+                        break;
+                }
+            }
+        }
+        catch (Exception io)
+        {
+            ArrayList<WorkOrder> array = new ArrayList();
+            ArrayList<WorkOrder> array1 = new ArrayList();
+            ArrayList<WorkOrder> array2 = new ArrayList<>();
+            pending = FXCollections.observableArrayList(array);
+            outstanding = FXCollections.observableArrayList(array1);
+            finalized = FXCollections.observableArrayList(array2);
+        }
+    }
+
+    public static void writeToFile()
+    {
+        File file = new File("C:\\CPSC300\\CPSC300\\src\\Database\\workOrders.ser");
+        ArrayList array = new ArrayList();
+        array.addAll(pending);
+        array.addAll(outstanding);
+        array.addAll(finalized);
+        try{
+            Management.writeList(file, array);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public static void updatePending(TableView table)
     {

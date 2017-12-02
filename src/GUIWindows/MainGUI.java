@@ -1,8 +1,5 @@
 package GUIWindows;
-import UpdateTables.UpdateCustomers;
-import UpdateTables.UpdateInventory;
-import UpdateTables.UpdatePartOrder;
-import UpdateTables.UpdateSuppliers;
+import UpdateTables.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,13 +21,14 @@ public class MainGUI
      * This is the method that creates the main window of our GUI this is where all of the users will start after
      * logging in and where all the other tasks will start from.
      */
-    public static void MainGUI()
+    public static void MainGUI(String name, int privilege)
     {
-        System.out.println("Main");
         UpdateInventory.setObservableList();
         UpdateCustomers.setObservableList();
         UpdateSuppliers.setObservableList();
         UpdatePartOrder.setObservableList();
+        UpdateWorkOrder.setObservableList();
+        UpdateEquipment.setObservableList();
 
         Stage primaryStage = new Stage();
 
@@ -44,9 +42,11 @@ public class MainGUI
         Button inventory = new Button("Inventory");
         Button customers = new Button("Customers");
         Button suppliers = new Button("Suppliers");
+        Button equipment = new Button("Equipment");
+        Button user = new Button("User");
         Button test = new Button("Test");
 
-        VBox vBox = new VBox(10, inventory, suppliers, customers);
+        VBox vBox = new VBox(10, inventory, suppliers, customers, equipment, user);
         VBox vbButtons = new VBox(10, partOrder, workOrder, report, test);
 
         GridPane grid = new GridPane();
@@ -57,8 +57,10 @@ public class MainGUI
         workOrder.setMaxWidth(Double.MAX_VALUE);
         report.setMaxWidth(Double.MAX_VALUE);
         inventory.setMaxWidth(Double.MAX_VALUE);
+        equipment.setMaxWidth(Double.MAX_VALUE);
         customers.setMaxWidth(Double.MAX_VALUE);
         suppliers.setMaxWidth(Double.MAX_VALUE);
+        user.setMaxWidth(Double.MAX_VALUE);
         test.setMaxWidth(Double.MAX_VALUE);
 
         primaryStage.setTitle("Inventory Management");
@@ -84,7 +86,7 @@ public class MainGUI
             @Override
             public void handle(ActionEvent event) {
 
-                PartOrderWindow.PartOrderWindow();
+                PartOrderWindow.PartOrderWindow(name, privilege);
             }
         });
 
@@ -92,7 +94,7 @@ public class MainGUI
         workOrder.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                WorkOrderWindow.WorkOrderWindow();
+                WorkOrderWindow.WorkOrderWindow(name, privilege);
             }
         });
 
@@ -100,7 +102,7 @@ public class MainGUI
         report.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Report.Report();
+                Report.Report(name, privilege);
             }
         });
 
@@ -108,7 +110,7 @@ public class MainGUI
         inventory.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Inventory.InventoryList();
+                Inventory.InventoryList(name, privilege);
             }
         });
 
@@ -116,7 +118,7 @@ public class MainGUI
         customers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Customers.CustomerList();
+                Customers.CustomerList(name, privilege);
             }
         });
 
@@ -124,7 +126,21 @@ public class MainGUI
         suppliers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Suppliers.SupplierList();
+                Suppliers.SupplierList(name, privilege);
+            }
+        });
+
+        equipment.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                EquipmentWindow.EquipmentWindow(name, privilege);
+            }
+        });
+
+        user.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                UserWindow.userWindow(name, privilege);
             }
         });
 

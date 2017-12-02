@@ -9,7 +9,7 @@ public class Report {
     /**
      * This is the window that deals with the generation of reports.
      */
-    public static void Report()
+    public static void Report(String name, int privilege)
     {
         Stage stage = new Stage();
         stage.setTitle("Report");

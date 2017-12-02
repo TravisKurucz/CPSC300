@@ -7,10 +7,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,11 +36,8 @@ public class UpdatePartOrder
 
     public static void setObservableList()
     {
-        System.out.println("observable");
         try {
-            System.out.println("try");
             ArrayList array = Management.readList("C:\\CPSC300\\CPSC300\\src\\Database\\partOrders.ser");
-            System.out.println("Array size is " + array.size());
             ArrayList<PartOrder> array0 = new ArrayList();
             ArrayList<PartOrder> array1 = new ArrayList();
             ArrayList<PartOrder> array2 = new ArrayList<>();
@@ -45,14 +46,11 @@ public class UpdatePartOrder
             finalized = FXCollections.observableArrayList(array2);
             for(int i = 0; i<array.size(); i++)
             {
-                System.out.println("for");
                 Object obj = array.get(i);
-                System.out.println("In for loop");
                 PartOrder order = (PartOrder) obj;
                 switch (order.getStatus())
                 {
                     case ('P'):
-                        System.out.println("Added to pending");
                         pending.add(order);
                         break;
                     case  ('O'):
@@ -66,7 +64,6 @@ public class UpdatePartOrder
         }
         catch (Exception io)
         {
-            System.out.println("in catch");
             ArrayList<PartOrder> array = new ArrayList();
             ArrayList<PartOrder> array1 = new ArrayList();
             ArrayList<PartOrder> array2 = new ArrayList<>();
@@ -249,14 +246,21 @@ public class UpdatePartOrder
         TableColumn partNumberCol = list.get(0);
         TableColumn nameCol = list.get(1);
         TableColumn amountOrderedCol = list.get(2);
+        TableColumn amountReceivedCol = list.get(3);
         TableColumn actualCostCol = list.get(4);
         TableColumn invoiceNumberCol = list.get(5);
         TableColumn dateCol = list.get(6);
 
+
         partNumberCol.setCellValueFactory(new PropertyValueFactory<>("partNumber"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         amountOrderedCol.setCellValueFactory(new PropertyValueFactory<>("numberOrdered"));
+        amountReceivedCol.setCellValueFactory(new PropertyValueFactory<>("amountReceived"));
         actualCostCol.setCellValueFactory(new PropertyValueFactory<>("suggestedCost"));
+        invoiceNumberCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+
 
         table.getItems().addAll(order.getPartsOrdered());
     }
