@@ -13,6 +13,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import LoginSystem.*;
 
+import javax.swing.*;
+
 /**
  * This is where the program starts and where the GUI is built.
  */

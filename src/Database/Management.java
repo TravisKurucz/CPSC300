@@ -1,5 +1,6 @@
 package Database;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -145,8 +146,8 @@ public class Management {
         }
         catch (Exception e) {
             //TODO this
-            System.out.println("Something went wrong");
-            e.printStackTrace();
+            //System.out.println("Something went wrong");
+            //e.printStackTrace();
             return null;
         }
     }
@@ -191,12 +192,12 @@ public class Management {
     {
 
         try {
-            String path = ClassLoader.getSystemClassLoader().getResource(".").getPath();
+            String path = "C:\\CPSC300\\Team1";
             File customers = new File(path+"\\customers.ser");
             File Equipment = new File(path+"\\Equipment.ser");
             File partOrders = new File(path+"\\partOrders.ser");
             File parts = new File(path+"\\parts.ser");
-            File supplers = new File(path+"\\suppliers.ser");
+            File suppliers = new File(path+"\\suppliers.ser");
             File users = new File(path+"\\users.ser");
             File workOrders = new File(path+"\\workOrders.ser");
 
@@ -220,10 +221,10 @@ public class Management {
                 parts.getParentFile().mkdirs();
                 parts.createNewFile();
             }
-            if(!supplers.exists())
+            if(!suppliers.exists())
             {
-                supplers.getParentFile().mkdirs();
-                supplers.createNewFile();
+                suppliers.getParentFile().mkdirs();
+                suppliers.createNewFile();
             }
             if(!users.exists())
             {
